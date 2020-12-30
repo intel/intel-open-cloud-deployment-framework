@@ -1,4 +1,4 @@
-# The whole OpenStack deployment process includes common environment setting, intel specil environment setting, OpenStack deployment, and OpenStack resource preparation.
+# The whole OpenStack deployment process includes common environment setting, intel special environment setting, OpenStack deployment, and OpenStack resource preparation.
 This is a project to deploy OpenStack via Kolla-Ansible method.
 
 Kolla-Ansible's mission statement is:
