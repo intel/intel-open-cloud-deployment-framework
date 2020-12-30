@@ -1,0 +1,2 @@
+# include external network setting
+- include: external_net.yaml

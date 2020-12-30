@@ -1,0 +1,4 @@
+local_temp: "{{ glocaltemp }}"
+debug_mode: true
+global_proxy: true
+docker_proxy: false

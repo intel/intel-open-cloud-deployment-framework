@@ -1,0 +1,35 @@
+# Copy shell script common_vm_create.sh to remote
+- name: Copy shell script common_vm_create.sh to remote
+  copy:
+    src: "{{ item }}"
+    dest: "{{ local_temp }}/{{ item }}"
+    mode: u+rxw,g-rwx,o-rwx
+  with_items:
+    - common_vm_create.sh
+    - pmem_vm_create.sh
+
+- name: Run instances
+  shell: /bin/bash common_vm_create.sh > common_vm_create.txt
+  args:
+    chdir: "{{ local_temp }}"
+  when: pmem_enable == false | bool
+  environment:
+    IMAGE_NAME: "{{ os_name }}"
+    COMMON_VM_NAME: "{{ vm_name }}"
+    VM_NUM: "{{ vm_num }}"
+    FLAVOR_NAME: "{{ flavor_name }}"
+    KEY_NAME: "{{ key_name }}"
+    VIRTUAL_PATH:  "{{ targetenv }}"
+
+- name: Run instances with PMEM
+  shell: /bin/bash pmem_vm_create.sh > pmem_vm_create.txt
+  args:
+    chdir: "{{ local_temp }}"
+  when: pmem_enable == true | bool
+  environment:
+    IMAGE_NAME: "{{ os_name }}"
+    PMEM_VM_NAME: "{{ vm_name }}"
+    VM_NUM: "{{ vm_num }}"
+    FLAVOR_NAME: "{{ flavor_name }}"
+    KEY_NAME: "{{ key_name }}"
+    VIRTUAL_PATH:  "{{ targetenv }}"

@@ -1,0 +1,5 @@
+# Up br-ex
+- name: Up br-ex
+  command: ip link set br-ex up
+  register: tapresult
+  ignore_errors: False

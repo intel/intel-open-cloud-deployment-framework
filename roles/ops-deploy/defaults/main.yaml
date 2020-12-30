@@ -1,0 +1,5 @@
+local_temp: "{{ glocaltemp }}"
+debug_mode: true
+
+external_ceph: false
+local_registry: true

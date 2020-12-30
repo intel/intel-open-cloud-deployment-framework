@@ -1,0 +1,5 @@
+# include common env setup steps before deployment
+- include: common_env.yaml
+
+# include intel special env setup steps before deployment
+- include: intel_env_allnode.yaml

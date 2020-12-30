@@ -1,0 +1,3 @@
+# include intel special env setup steps before deployment, this could be omitted in customer's env
+# This part is only for running on neutron server nodes part
+- include: tap.yaml

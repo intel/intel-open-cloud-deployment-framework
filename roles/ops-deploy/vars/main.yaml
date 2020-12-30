@@ -1,0 +1,32 @@
+# path to virtual env
+targetenv: "{{ glocalcache }}/openstackvenv"
+
+# variables for cloning kolla_ansible
+ka_repo: https://github.com/openstack/kolla-ansible
+ka_dest: "{{ glocalcache }}/kolla_ansible"
+ka_train: 9.2.0
+
+# kolla_ansible tarball backed up locally
+kolla_ansible_tar: "{{ role_path }}/files/source/kolla-ansible-9.2.0.tar.gz"
+kolla_ansible_dir: "{{ ka_dest }}"
+kolla_ansible_tool: "{{ ka_dest }}/tools"
+
+etc_kolla: /etc/kolla/
+
+# cache kolla_ansible inventory
+ka_inventory: "{{ glocalcache }}/kolla_ansible_inventory/"
+
+# variables for cloning kolla
+ko_repo: https://github.com/openstack/kolla
+ko_dest: "{{ glocalcache }}/kolla"
+ko_train: "{{ ka_train }}"
+
+# kolla tarball backed up locally
+kolla_tar: "{{ role_path }}/files/source/kolla-9.2.0.tar.gz"
+kolla_dir: "{{ ko_dest }}"
+
+# get enironment variables
+local_user: "{{ lookup('env','USER') }}"
+
+# logging file
+logfile: "{{ local_temp }}/kolla-ansible.log"

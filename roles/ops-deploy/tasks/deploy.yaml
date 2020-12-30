@@ -1,0 +1,23 @@
+# Install specified docker version
+- include: docker.yaml
+
+# Bootstrap servers with kolla deploy dependencies
+- name: Bootstrap servers with kolla deploy dependencies
+  shell: source "{{ targetenv }}/bin/activate" && kolla-ansible -i "{{ multinode }}" bootstrap-servers > "{{ logfile }}" 2>&1
+  args:
+    executable: /bin/bash
+    chdir: "{{ kolla_ansible_tool }}" 
+
+# Do pre-deployment checks for hosts
+- name: Do pre-deployment checks for hosts
+  shell: source "{{ targetenv }}/bin/activate" && kolla-ansible -i "{{ multinode }}" prechecks >> "{{ logfile }}" 2>&1
+  args:
+    executable: /bin/bash
+    chdir: "{{ kolla_ansible_tool }}" 
+
+# Finally proceed to actual OpenStack deployment
+- name: Actual OpenStack deployment
+  shell: source "{{ targetenv }}/bin/activate" && kolla-ansible -i "{{ multinode }}" deploy >> "{{ logfile }}" 2>&1
+  args:
+    executable: /bin/bash
+    chdir: "{{ kolla_ansible_tool }}" 

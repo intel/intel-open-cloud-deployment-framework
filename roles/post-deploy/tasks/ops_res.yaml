@@ -1,0 +1,19 @@
+# Copy shell script prepare_resource.sh to remote
+- name: Copy shell script prepare_resource.sh to remote
+  copy:
+    src: "{{ item }}"
+    dest: "{{ local_temp }}/{{ item }}"
+    mode: u+rxw,g-rwx,o-rwx
+  with_items:
+    - prepare_resource.sh
+
+# Prepare openstack resource
+- name: Prepare openstack resource
+  shell: /bin/bash  prepare_resource.sh > prepare_resource.txt
+  args:
+    chdir: "{{ local_temp }}"
+  environment:
+    IMAGE_PATH: "{{ os_image_path }}"
+    IMAGE_NAME: "{{ os_name }}"
+    IMAGE_TYPE: "{{ os_type }}"
+    VIRTUAL_PATH:  "{{ targetenv }}"

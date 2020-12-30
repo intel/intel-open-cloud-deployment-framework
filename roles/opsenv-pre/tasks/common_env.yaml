@@ -1,0 +1,43 @@
+# All of the below operations run on all the nodes
+
+# Copy shell scripts to remote
+- name: Copy shell scripts to remote hosts
+  copy:
+    src: "{{ item }}"
+    dest: "{{ local_temp }}"
+    mode: u+rxw,g-rwx,o-rwx
+  with_items:
+    - updateyumresource.sh
+
+# Update yum repo source with local yum source
+- name: Change yum repo source
+  shell: /bin/bash "{{ local_temp }}/updateyumresource.sh" >> "{{ local_temp }}/updateyumresource.txt"
+
+# Disable IPv6 on all the nodes
+- name: Disable IPv6
+  sysctl:
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+    state: present
+    reload: "{{ item.reload }}"
+  with_items:
+    - { name: net.ipv6.conf.all.disable_ipv6, value: 1, reload: no }
+    - { name: net.ipv6.conf.default.disable_ipv6, value: 1, reload: yes}
+
+# Disable firewall on all the nodes
+- name: Stop firewalld service
+  systemd:
+    name: firewalld
+    state: stopped
+    enabled: no
+
+# Disable selinux on all the nodes
+- name: Disable SELinux
+  selinux:
+    state: disabled
+
+# Install package packages
+# Make sure pip version is not so high, pip install pip==9.0.1 on all the nodes
+- name: Install python dependent packages
+  pip:
+    name: pip==9.0.1

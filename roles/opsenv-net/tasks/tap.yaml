@@ -1,0 +1,5 @@
+# Create tap0 on all the controller node (on all the neutron server node, root)
+- name: Create tap0 on all the neutron server node
+  command: ip tuntap add dev tap0 mode tap
+  register: tapresult
+  ignore_errors: True
