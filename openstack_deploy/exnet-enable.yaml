@@ -1,0 +1,9 @@
+- name: Enable fake external network
+  hosts: neutron_server_host
+  remote_user: centos
+  become: true
+  vars:
+    network_interface: eno1
+    network_external_interface: tap0
+  roles:
+    - exnet-enable

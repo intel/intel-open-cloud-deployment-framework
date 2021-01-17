@@ -9,7 +9,7 @@
     - pmem_vm_create.sh
 
 - name: Run instances
-  shell: /bin/bash common_vm_create.sh > common_vm_create.txt
+  shell: /bin/bash common_vm_create.sh > {{ local_temp }}/common_vm_create.txt
   args:
     chdir: "{{ local_temp }}"
   when: pmem_enable == false | bool
@@ -22,7 +22,7 @@
     VIRTUAL_PATH:  "{{ targetenv }}"
 
 - name: Run instances with PMEM
-  shell: /bin/bash pmem_vm_create.sh > pmem_vm_create.txt
+  shell: /bin/bash pmem_vm_create.sh > {{ local_temp }}/pmem_vm_create.txt
   args:
     chdir: "{{ local_temp }}"
   when: pmem_enable == true | bool

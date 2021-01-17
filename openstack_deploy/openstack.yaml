@@ -9,12 +9,14 @@
 
 - include: ops-deploy.yaml
 
-- name: Up br-ex on neutron servers
-  hosts: neutron_server_host
-  remote_user: centos
-  become: true 
-  roles:
-    - exnet-enable 
+#- name: Up br-ex on neutron servers
+#  hosts: neutron_server_host
+#  remote_user: centos
+#  become: true 
+#  roles:
+#    - exnet-enable 
+
+- include: exnet-enable.yaml
 
 # Defaults:
 # os_image_path: "/tmp/centos.qcow2"
