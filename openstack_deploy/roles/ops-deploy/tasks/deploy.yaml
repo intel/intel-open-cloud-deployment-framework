@@ -1,6 +1,3 @@
-# Install specified docker version
-- include: docker.yaml
-
 # Bootstrap servers with kolla deploy dependencies
 - name: Bootstrap servers with kolla deploy dependencies
   shell: source "{{ targetenv }}/bin/activate" && kolla-ansible -i "{{ multinode }}" bootstrap-servers > "{{ logfile }}" 2>&1

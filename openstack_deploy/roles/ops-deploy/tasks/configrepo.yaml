@@ -41,6 +41,9 @@
     - name: Use local kolla tarball
       command: tar xzf {{ kolla_tar }} -C {{ kolla_dir }} --strip-components 1
 
+# Install specified docker version
+- include: docker.yaml
+
 - name: Install requirements of kolla and kolla-ansible
   pip:
     name: "{{ kolla_ansible_dir }}, {{ kolla_dir }}"
