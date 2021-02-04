@@ -1,4 +1,0 @@
-local_temp: "{{ glocaltemp }}"
-os_image_path: "{{ glocalcache }}/os_images/centos.qcow2"
-os_name: centos
-os_type: linux

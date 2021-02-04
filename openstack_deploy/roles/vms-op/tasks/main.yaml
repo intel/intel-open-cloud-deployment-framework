@@ -1,5 +1,0 @@
-# include vms creation steps
-- include: vms_create.yaml
-
-# include vms deletion steps
-#- include: vms_delete.yaml 

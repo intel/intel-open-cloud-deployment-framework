@@ -1,9 +1,0 @@
-local_temp: "{{ glocaltemp }}"
-
-os_name: centos
-vm_name: demovm
-pmem_vm_name: pmemvm
-vm_num: 2
-flavor_name: m1.small
-key_name: mykey
-pmem_enable: false

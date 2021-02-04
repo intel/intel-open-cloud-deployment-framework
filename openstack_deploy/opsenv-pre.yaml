@@ -1,9 +1,0 @@
-- name: Set up the environment/Preparation before openstack deployment with root user
-  hosts: all_host
-  become: true
-  vars:
-    http_proxy: "http://child-prc.intel.com:913"
-    https_proxy: "http://child-prc.intel.com:913"
-  roles:
-    - common
-    - opsenv-pre 

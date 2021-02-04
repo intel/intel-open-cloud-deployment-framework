@@ -1,8 +1,0 @@
-# include python and virtual env dependencies
-- include: dependency.yaml
-
-# include ansible and kolla-ansible preparation
-- include: configrepo.yaml
-
-# include kolla-ansible deployment
-- include: deploy.yaml

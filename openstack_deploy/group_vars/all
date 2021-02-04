@@ -1,4 +1,0 @@
-glocalcache: /home/centos/intel/
-gpmemcsigit: https://github.com/intel/pmem-CSI
-gworkloadgit: https://github.com/clayding/opencloud_benchmark.git
-glocaltemp: /tmp

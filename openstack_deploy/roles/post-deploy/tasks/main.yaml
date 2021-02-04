@@ -1,5 +1,0 @@
-# include installation work after deploy successfully
-- include: post_dpl.yaml
-
-# include openstack resource preparation for openstack usage
-- include: ops_res.yaml
