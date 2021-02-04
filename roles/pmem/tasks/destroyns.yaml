@@ -1,0 +1,66 @@
+## Destroy all existing namespaces
+#[
+#  {
+#    "dev":"namespace1.1",
+#    "mode":"fsdax",
+#    "map":"dev",
+#    "size":126701535232,
+#    "uuid":"08f61a07-410a-11eb-aecd-8ae627948923",
+#    "sector_size":512,
+#    "align":1073741824,
+#    "blockdev":"pmem1.1",
+#    "name":"pmem-csi"
+#  },
+#  {
+#    "dev":"namespace1.0",
+#    "mode":"devdax",
+#    "map":"mem",
+#    "size":141731823616,
+#    "uuid":"483901a5-8f93-4631-a900-046f46cad9df",
+#    "chardev":"dax1.0",
+#    "align":2097152,
+#    "name":"ns0"
+#  }
+#]
+- name: Show all existing namespaces
+  command: ndctl list -N
+  register: ns_json
+
+  # it's json format
+- debug: msg="{{ item.dev }}"
+  with_items: "{{ ns_json.stdout }}"
+  when: ns_json.stdout != "" and debug_mode | bool
+
+- block:
+    - name: Destroy all namespaces
+      command: ndctl destroy-namespace "{{ item.dev }}" --force
+      with_items: "{{ ns_json.stdout }}"
+      when: ns_json.stdout != ""
+
+      #- name: Disable all namespaces
+      #  command: ndctl destroy-namespace -f all
+  rescue:
+    - name: Find volume groups name on PMEM
+      shell: vgs | grep "region"
+      register: vg_list
+
+    - name: Remove all logical volume created from PMEM
+      shell: lvremove  `echo "{{ item }}" | awk '{print $1}'` -y
+      with_items: "{{ vg_list.stdout_lines }}"
+      when: vg_list.stdout != ""
+
+    - name: Remove all volume groups created from PMEM
+      shell: vgremove  `echo "{{ item }}" | awk '{print $1}'` -y
+      with_items: "{{ vg_list.stdout_lines }}"
+      when: vg_list.stdout != ""
+
+    - name: Show all volumes groups
+      shell: vgs
+      register: vg_list
+    - debug: msg="{{ vg_list.stdout_lines  }}"
+      when: debug_mode | bool
+
+    - name: Re-destroy all namespaces
+      command: ndctl destroy-namespace "{{ item.dev }}" --force
+      with_items: "{{ ns_json.stdout }}"
+      when: ns_json.stdout != ""

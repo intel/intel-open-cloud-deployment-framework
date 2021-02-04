@@ -1,0 +1,33 @@
+## Copy glance-api.conf, cinder-volume.conf, cinder-backup.conf 
+## and nova-compute.conf to /etc/kolla/config/
+- name: Copy the ceph.conf and keyrings to the appropriate config
+  block:
+    - name: Create "{{ kollaconfig }}/{{ item.dest }}"
+      file:
+        path: "{{ kollaconfig }}/{{ item.dest }}"
+        state: directory
+
+    - name: Check {{ kollaconfig }}/{{ item.dest }}/{{ item.name }}.conf
+      stat:
+        path: "{{ kollaconfig }}/{{ item.dest }}/{{ item.name }}.conf"
+      register: stat_result
+
+    - name: Copy as {{ kollaconfig }}/{{ item.dest }}/{{ item.name }}.conf
+      copy:
+        src: "{{ backend_conf }}/{{ item.name }}.conf"
+        dest: "{{ kollaconfig }}/{{ item.dest }}"
+      when: not stat_result.stat.exists
+
+    - name: Merge into {{ kollaconfig }}/{{ item.dest }}/{{ item.name }}.conf
+      shell: >
+        /usr/local/bin/confmerge --type ini -f
+        "{{ backend_path }}/{{ item.name }}.conf" 
+        "{{ kollaconfig }}/{{ item.dest }}/{{ item.name }}.conf"
+        "{{ kollaconfig }}/{{ item.dest }}/{{ item.name }}.conf"
+      when: stat_result.stat.exists
+
+# with_items:
+#   - { name: glance-api,    dest: glance}
+#   - { name: cinder-volume, dest: cinder }
+#   - { name: cinder-backup, dest: cinder }
+#   - { name: nova-compute,  dest: nova}     

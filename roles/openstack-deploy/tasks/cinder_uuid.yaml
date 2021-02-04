@@ -1,0 +1,32 @@
+# Reset cinder secret uuid in /etc/kolla/cinder-volume/cinder.conf
+# on each neutron node
+- block:
+    - name: Filter uuid ceph client.cinder secret
+      shell: >
+        virsh secret-list | grep "ceph client.cinder secret" | cut -d ' ' -f 2
+      register: secret_uuid
+      ignore_errors: True
+      become: true
+
+    - name: Check if cinder secret uuid is empty
+      debug: msg="cinder secret uuid is empty, skip setting"
+      when: secret_uuid.stdout == "" or secret_uuid.stdout.find('error') != -1
+  when: ansible_default_ipv4.address == item
+
+- block:
+    - debug: msg="Get cinder secret uuid {{ secret_uuid.stdout }}"
+      when: debug_mode | bool
+
+    - name: Changed rbd_secret_uuid in /etc/kolla/cinder-volume/cinder.conf
+      ini_file:
+        path: /etc/kolla/cinder-volume/cinder.conf
+        section: rbd-1
+        option: rbd_secret_uuid
+        value: "{{ secret_uuid.stdout }}"
+        backup: yes
+      become: true
+
+    - name: Restart cinder_volume container
+      command: docker restart cinder_volume
+      become: true
+  when: ansible_default_ipv4.address == item and secret_uuid.stdout != ""

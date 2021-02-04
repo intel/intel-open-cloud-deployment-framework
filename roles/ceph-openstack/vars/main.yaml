@@ -1,0 +1,13 @@
+# cache ceph keyring
+#keyringcache: "{{ local_temp }}/ceph"
+keyringdest: /etc/kolla/config
+cephconfig: /etc/ceph
+kollaconfig: /etc/kolla/config
+
+# backend configuration files
+backend_conf: "backend"
+backend_path: "{{ role_path }}/files/backend"
+
+# temporary files
+secret_temp: "{{ local_temp }}/secret.xml"
+uuid_backup: "{{ local_temp }}/uuid.bak"

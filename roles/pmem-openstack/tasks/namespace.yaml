@@ -1,0 +1,32 @@
+- name: Check existing of namespace json file
+  stat:
+    path: "{{ namespace_json }}"
+  register: ns_exist
+  delegate_to: localhost
+  run_once: true
+
+# Abort whole process if no namespace json found
+- fail: msg="{{ namespace_json }} does not exist, abort"
+  when: ns_exist.stat.exists == false | bool
+
+# Create new namespaces
+- name: Read namespace config file from local
+  shell: cat "{{ namespace_json }}"
+  register: result
+  delegate_to: localhost
+  run_once: true
+
+- name: Assign namespace conf to variable
+  set_fact:
+    nsconf: "{{ result.stdout | from_json }}"
+
+- name: Create new namespaces
+  command: ndctl create-namespace -s "{{ item.size }}" -m devdax -M mem -n "{{ item.name }}"
+  loop: "{{ nsconf.namespace }}"
+
+- name: Show existing regions
+  command: ndctl list -RN
+  register: regions
+
+- debug: msg="{{ regions.stdout_lines }}"
+  when: debug_mode | bool

@@ -1,0 +1,11 @@
+- name: Deploy openstack using kolla-ansible
+  hosts: all_hosts
+  remote_user: "{{ ansible_ssh_user }}"
+  roles:
+    - openstack-deploy
+
+- name: Create/Delete new/running VMs
+  hosts: deployment_host
+  remote_user: "{{ ansible_ssh_user }}"
+  roles:
+    - openstack-instance

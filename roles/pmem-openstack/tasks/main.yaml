@@ -1,0 +1,13 @@
+# delete all existing namespaces
+- name: Run tasks/destroyns.yaml in pmem role
+  include_role:
+    name: pmem
+    tasks_from: destroyns
+
+# create new namespaces
+- include: namespace.yaml
+
+# just run on controller host once
+- include: confgen.yaml
+  delegate_to: localhost
+  run_once: true

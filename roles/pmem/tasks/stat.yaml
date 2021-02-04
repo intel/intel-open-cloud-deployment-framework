@@ -1,0 +1,8 @@
+# Dump current mode and target mode
+- name:
+  block:
+    - debug: msg="PMEM current mode= {{ item.mode }}, target mode= {{ pmem_mode }}"
+      when: debug_mode | bool
+
+    - set_fact:
+        current_mode: "{{ item.mode }}"

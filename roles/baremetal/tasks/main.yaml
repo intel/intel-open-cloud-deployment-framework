@@ -1,0 +1,10 @@
+# setup environment
+- include: setup.yaml
+
+# Set proxy
+- include: proxy.yaml
+  when:
+    - http_proxy is defined
+    - http_proxy != ''
+    - https_proxy is defined
+    - https_proxy != ''

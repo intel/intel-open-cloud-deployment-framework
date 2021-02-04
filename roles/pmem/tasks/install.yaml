@@ -1,0 +1,62 @@
+- name: Remove existing ipmctl repo
+  file:
+    path: "{{ ipmctl_dest }}"
+    state: absent
+
+- block:
+    - name: Clone the latest ipmctl tool
+      git:
+        repo:    "{{ ipmctl_repo }}"
+        dest:    "{{ ipmctl_dest }}"
+        version: "{{ ipmctl_vers }}"
+      register: clone_result
+      async: 120
+      poll: 10
+     
+    - debug: msg="{{ clone_result }}"
+      when: debug_mode | bool
+  # Copy local tarball to remote if cloning failed
+  rescue:
+    - name: Create {{ ipmctl_dir }}
+      file:
+        path: "{{ ipmctl_dir }}"
+        state: directory
+
+    - name: Copy ipmctl tarball to remote
+      copy:
+        src: "{{ ipmctl_src }}"
+        dest: "{{ ipmctl_dir }}"
+
+    - name: Use remote ipmctl tarball
+      command: tar xzf "{{ ipmctl_tar }}" -C "{{ ipmctl_dir }}" --strip-components 1
+
+- name: Copy build script to ipctl repo
+  copy:
+    src:  "{{ item }}"
+    dest: "{{ ipmctl_dest }}"
+  with_items:
+    - "{{ ipmctl_cmp }}"
+    - "{{ ipmctl_shm }}"
+    - "{{ ipmctl_set }}"
+    - "{{ ipmctl_chm }}"
+
+- name: Compile and install ipmctl tool
+  shell: "cd {{ ipmctl_dest }} && /bin/bash {{ ipmctl_cmp }}"
+  register: result
+
+- set_fact:
+    # last line to get the path to installed ipmctl
+    ipmctl_bin: "{{ result.stdout_lines[-1:] | join('') }}"
+
+- name: Show path to compiled ipmctl tool
+  debug: msg="{{ ipmctl_bin }}"
+  when: debug_mode | bool
+
+- name: Show memory resource to examinate ipmctl
+  shell: "/bin/bash {{ ipmctl_dest }}/{{ ipmctl_shm }}"
+  register: result
+
+- name: Print compilation log of ipmctl
+  debug:
+    msg: "{{ result.stdout_lines }}"
+  when: debug_mode | bool

@@ -1,0 +1,5 @@
+- name: Failed on {{ glance_image_path }} not found
+  stat:
+    path: "{{ glance_image_path }}"
+  register: image_exist
+  failed_when: not image_exist.stat.exists 

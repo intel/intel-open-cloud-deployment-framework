@@ -1,0 +1,17 @@
+- name: Specifiy prefix name of VMs
+  set_fact:
+    name_prefix: "{{ vm_pmem_prefix if vm_pmem_enabled else vm_prefix }}"
+
+- name: Attach volumes to running servers
+  script: vm_mount.sh
+  register: mnt_status
+  environment:
+    OPS_VIRTUAL_PATH: "{{ targetenv }}"
+    OPS_VM_NAME:      "{{ name_prefix }}"
+    OPS_MOUNT_DEVICE: "{{ vm_attach_device }}"
+    OPS_MOUNT_TIMEOUT: "{{ vm_attach_timeout }}"
+    OPS_VM_NUM:       "{{ vm_number }}"
+
+- name: Print attaching results
+  debug: msg="{{ mnt_status.stdout_lines }}"
+  when: debug_mode | bool

@@ -1,0 +1,9 @@
+#Usage:
+#    export ANSIBLE_HOST_KEY_CHECKING=False
+#    ansible-playbook -e ansible_ssh_user="user" -e ansible_ssh_pass="password" -i inventory/hosts ssh.yaml
+
+- name: Deploy SSH key that grants access to each host
+  hosts: ssh_hosts
+  remote_user: "{{ ansible_ssh_user }}"
+  roles:
+     - ssh

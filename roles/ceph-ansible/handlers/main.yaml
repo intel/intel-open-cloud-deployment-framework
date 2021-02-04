@@ -1,0 +1,15 @@
+- name: Show ceph status
+  command: ceph status
+  register: result
+  become: true
+    
+- debug: msg="{{ result.stdout_lines }}"  
+  when: debug_mode | bool
+
+- name: List created pools
+  command: ceph osd pool ls
+  register: result
+  become: true
+
+- debug: msg={{ result.stdout_lines }}
+  when: debug_mode | bool

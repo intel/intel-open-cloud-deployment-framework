@@ -1,0 +1,58 @@
+# If you have cephx authentication enabled,
+# create a new user for Nova/Cinder and Glance.
+# Execute the following:
+
+- name: Delete existing auth users
+  command: ceph auth del client.{{ item.user }}
+  with_items:
+    - { user: glance }
+    - { user: cinder-backup }
+    - { user: cinder }
+
+- name: Create a new user for cinder-backup and glance
+  command: >
+    ceph auth get-or-create client.{{ item.user }} mon 'profile rbd' osd
+    'profile rbd pool={{ item.pool  }}' mgr 'profile rbd pool={{ item.pool }}'
+  with_items:
+    - { user: glance, pool: images }
+    - { user: cinder-backup, pool: backups }
+
+- name: Create a new user for nova/cinder
+  command: >
+    ceph auth get-or-create client.{{ item.user }} mon 'profile rbd' osd
+    'profile rbd pool={{ item.pool1 }}, profile rbd pool={{ item.pool2 }},
+    profile rbd-read-only pool={{ item.pool3 }}' mgr 'profile
+    rbd pool={{ item.pool1 }}, profile rbd pool={{ item.pool2 }}'
+  with_items:
+    - { user: cinder, pool1: volumes, pool2: vms, pool3: images}
+
+- name: Add the keyrings to the appropriate files
+  include_tasks: keyring_add.yaml
+  with_items:
+    - glance
+    - cinder
+    - cinder-backup
+
+# Create secret key of the client.cinder and cache it to /etc/ceph/
+- name: Add the key to the appropriate files
+  include_tasks: key.yaml
+  with_items:
+    - cinder
+
+- name: Copy ceph.conf and keyring to kolla config
+  include_tasks: keyring_cpy.yaml
+  with_items:
+    - { name: glance,        rename: glance,        dest: glance }
+    - { name: cinder,        rename: cinder,        dest: cinder/cinder-volume }
+    - { name: cinder,        rename: cinder,        dest: cinder/cinder-backup }
+    - { name: cinder-backup, rename: cinder-backup, dest: cinder/cinder-backup }
+    - { name: cinder,        rename: nova,          dest: nova }
+    - { name: cinder,        rename: cinder,        dest: nova }
+
+- name: Copy backend configuration files to kolla config
+  include_tasks: backend.yaml
+  with_items:
+    - { name: glance-api,    dest: glance }
+    - { name: cinder-volume, dest: cinder }
+    - { name: cinder-backup, dest: cinder }
+    - { name: nova-compute,  dest: nova }  

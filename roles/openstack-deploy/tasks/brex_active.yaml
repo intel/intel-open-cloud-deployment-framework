@@ -1,0 +1,21 @@
+# Activate virtual NIC
+- block:
+    - name: Bring br-ex into up status
+      command: ip link set br-ex up
+      register: brex_result
+      ignore_errors: True
+
+    - debug: msg="{{ brex_result.stdout_lines }}"
+      when: debug_mode | bool
+
+    - name: Add ip address to br-ex
+      command: ip addr add 10.0.2.1/24 dev br-ex
+
+    - name: Postrouting phsical NIC using iptables
+      command: >
+        iptables -t nat -A POSTROUTING -o "{{ network_interface }}" -j MASQUERADE
+  when:
+    - virtual_nic_enabled | bool
+    - ansible_default_ipv4.address == item
+  become: true
+# with_items: "{{ ops_networks }}"

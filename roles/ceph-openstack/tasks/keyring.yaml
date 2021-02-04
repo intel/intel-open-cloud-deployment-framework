@@ -1,0 +1,54 @@
+- name: Generate new keyrings to the appropriate files
+  block:
+    - command: ceph auth get-or-create client.{{ item }}
+      register: cmd_output
+
+    - copy:
+        content: "{{ cmd_output.stdout }}"
+        dest: "{{ cephconfig }}/client.{{ item }}.keyring"
+# # resused or included from externel task  
+# with_items:
+#   - glance
+#   - cinder
+#   - cinder-backup
+  tags: ceph_keyring_add
+
+- name: Dispatch the keyrings to the appropriate servers
+  block:
+    - copy:
+        src: "{{ keyringcache }}/client.{{ item.name }}.keyring"
+        dest: "{{ keyringdest }}/client.{{ item.name }}.keyring"
+
+    - file:
+        path: "{{ keyringdir }}/client.{{ item.name }}.keyring"
+        owner: "{{ item.owner }}"
+        group: "{{ item.owner }}"
+      when: "{{ item.chown }} != {{ false }}"
+# # resused or included from externel task
+# with_items:
+#   - { name: glance, owner: glance , chown: true }
+#   - { name: cinder, owner: cinder , chown: true }
+#   - { name: cinder-backup, owner: cinder, chown: true }
+#   - { name: cinder, owner: cinder , chown: false }  
+  tags: ceph_keyring_dph
+
+- name: Copy the ceph.conf and keyrings to the appropriate config
+  block:
+    - file:
+        path: {{ kollaconfig }}/{{ item.dest }}
+        state: directory
+
+    - copy:
+        src: "{{ cephconfig }}/ceph.conf"
+        dest: "{{ kollaconfig }}/{{ item.dest }}/ceph.conf"
+
+    - copy:
+        src:  "{{ cephconfig }}/client.{{ item.name }}.keyring"
+        dest: "{{ kollaconfig }}/{{ item.dest }}/client.{{ item.rename }}.keyring"
+# with_items:
+#   - { name: glance,        rename: glance,        dest: glance}
+#   - { name: cinder,        rename: cinder,        dest: cinder-volume }
+#   - { name: cinder,        rename: cinder,        dest: cinder-backup }
+#   - { name: cinder-backup, rename: cinder-backup, dest: cinder-backup }
+#   - { name: cinder,        rename: nova,          dest: nova}     
+  tags: ceph_keyring_cpy
