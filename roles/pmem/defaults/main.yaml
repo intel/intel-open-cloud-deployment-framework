@@ -1,0 +1,12 @@
+# AppDirect: AppDirect mode with all modules in an interleaved set [Default]
+# AppDirectNotInterleaved: AppDirect mode with all modules in an interleaved set
+# Other: Memory
+pmem_mode: AppDirect
+
+# Repository url to download ipmctl tool
+ipmctl_repository: https://github.com/intel/ipmctl.git
+ipmctl_version: v02.00.00.3830
+
+debug_mode: true
+local_temp : "{{ glocaltemp }}"
+local_cache: "{{ glocalcache }}"

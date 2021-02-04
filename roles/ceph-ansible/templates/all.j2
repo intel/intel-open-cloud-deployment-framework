@@ -1,0 +1,22 @@
+# https://docs.ceph.com/projects/ceph-ansible/en/latest/
+cluster: ceph                   
+ceph_origin: {{ ceph_origin }}
+ceph_repository: {{ ceph_repository }}
+ceph_stable_release: {{ ceph_stable_release }}
+public_network: "{{ ceph_subnet_mask }}"
+cluster_network: "{{ ceph_subnet_mask }}"
+monitor_interface: {{ ceph_network_ifg }}
+devices:
+  - '{{ ceph_block_device }}'
+osd_scenario: collocated
+# ceph-ansible is not integrated with the new orchestrator APIs,
+# introduced in Nautlius and Octopus, which means that newer management
+# features and dashboard integration are not available.
+dashboard_enabled: False
+radosgw_interface: {{ ceph_network_ifg }}
+
+{% if ceph_repository == 'custom' %}
+ceph_custom_key: {{ ceph_custom_key }}
+ceph_custom_repo: {{ ceph_custom_repo}}
+{% endif %}
+configure_firewall: False

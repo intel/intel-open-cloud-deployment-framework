@@ -1,0 +1,8 @@
+# create pools
+- include: pools.yaml
+
+# setup ceph client authentication
+- include: auth.yaml
+
+# add secret key to libvrit
+- include: secret.yaml

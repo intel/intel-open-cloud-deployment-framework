@@ -1,0 +1,6 @@
+- name: Attach virtual persistent memory to guests
+  hosts: pmem_hosts
+  become: true
+  remote_user: "{{ ansible_ssh_user }}" 
+  roles:
+     - pmem-openstack

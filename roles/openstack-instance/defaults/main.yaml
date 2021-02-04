@@ -1,0 +1,29 @@
+local_temp: "{{ glocaltemp }}"
+local_cache: "{{ glocalcache }}"
+debug_mode: true
+
+# path to virtual env
+targetenv: "{{ local_cache }}/openstackvenv"
+
+vm_image: Centos
+vm_prefix: demovm
+vm_number: 3
+vm_flavor: m1.small
+vm_key: mykey
+vm_network: "private_net"
+
+vm_pmem_prefix: "pmem-{{ vm_prefix }}"
+vm_pmem_enabled: false
+vm_pmem_flavor: m1.small.pmem_medium
+
+# User data for VMs
+vm_ud_path: "{{ local_temp }}/user_data.sh"
+
+# Device path in VMs as which attaching volume
+vm_attach_device: /dev/vdb
+
+# Wait up to vm_start_timeout * vm_start_timeout seconds for VMs starting
+vm_start_timeout: 10
+
+# Wait up vm_attach_timeout * vm_attach_timeout seconds for volume attaching
+vm_attach_timeout: 2

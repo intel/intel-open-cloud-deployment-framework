@@ -1,0 +1,44 @@
+# path to virtual env
+targetenv: "{{ local_cache }}/openstackvenv"
+
+# variables for cloning kolla_ansible
+kolla_ansible_repo: "{{ kolla_ansible_repository }}"
+kolla_ansible_dest: "{{ local_cache }}/kolla_ansible"
+kolla_ansible_vers: "{{ kolla_ansible_version }}"
+
+# kolla_ansible tarball backed up locally
+kolla_ansible_tar: "{{ role_path }}/files/source/kolla-ansible-9.2.0.tar.gz"
+kolla_ansible_dir: "{{ kolla_ansible_dest }}"
+kolla_ansible_tool: "{{ kolla_ansible_dest }}/tools"
+
+# kolla config directory
+etc_kolla: /etc/kolla/
+
+# cache kolla_ansible inventory
+ka_inventory: "{{ local_cache }}/kolla_ansible_inventory/"
+
+# variables for cloning kolla
+kolla_repo: "{{ kolla_repository }}"
+kolla_dest: "{{ local_cache }}/kolla"
+kolla_vers: "{{ kolla_version }}"
+
+# kolla tarball backed up locally
+kolla_tar: "{{ role_path }}/files/source/kolla-9.2.0.tar.gz"
+kolla_dir: "{{ kolla_dest }}"
+
+# get enironment variables
+local_user: "{{ lookup('env','USER') }}"
+
+# logging file
+logfile: "{{ local_temp }}/kolla-ansible.log"
+
+# global config for kolla-ansible
+external_ceph: "{{ ops_external_ceph }}"
+local_registry: "{{ ops_local_registry }}"
+docker_registry: "{{ ops_docker_registry }}"
+docker_namespace: "{{ ops_docker_namespace }}"
+kolla_internal_vip_address: "{{ ops_kolla_internal_vip_address }}"
+network_interface: "{{ ops_network_interface }}"
+network_external_interface: "{{ ops_network_external_interface }}"
+
+virtual_nic_enabled: "{{ ops_virtual_nic_enabled }}"

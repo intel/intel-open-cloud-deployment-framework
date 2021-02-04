@@ -1,0 +1,6 @@
+local_temp : "{{ glocaltemp }}"
+local_cache: "{{ glocalcache }}"
+debug_mode: true
+
+# Json file for creating new PMEM namespaces
+pmem_namespace: "{{ role_path }}/files/ns.json"

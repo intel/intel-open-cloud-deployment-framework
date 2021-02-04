@@ -1,0 +1,54 @@
+- block:
+    # Install dependencies
+    - include: dependency.yaml
+
+    # Run precheck
+    - include: precheck.yaml
+
+    # Configure kolla and kolla-ansible
+    - include: configrepo.yaml
+
+    # Create virtual NIC if needed
+  delegate_to: localhost
+  run_once: true
+
+- include: vnic_create.yaml
+  with_items: "{{ ops_networks }}"
+
+# kolla-ansible deployment
+- include: deploy.yaml
+  delegate_to: localhost
+  run_once: true
+
+# Activate br-ex
+- include: brex_active.yaml
+  with_items: "{{ ops_networks }}"
+
+- block:
+    # openstack post deploy
+    - include: post_deploy.yaml
+      tags:
+        - openstack_post_deploy
+        - openstack_prepare
+
+    # prepare resources
+    - include: resources.yaml
+      tags:
+        - openstack_resource
+        - openstack_prepare
+  delegate_to: localhost
+  run_once: true
+
+# Reset nova rbd_secret_uuid
+- include: nova_uuid.yaml
+  with_items: "{{ ops_computes }}"
+  tags:
+    - nova_uuid
+    - reset_uuid
+
+# Reset cinder rbd_secret_uuid
+- include: cinder_uuid.yaml
+  with_items: "{{ ops_storages }}"
+  tags:
+    - cinder_uuid
+    - reset_uuid

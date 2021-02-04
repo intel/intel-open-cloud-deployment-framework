@@ -1,0 +1,10 @@
+# include vms creation steps
+# create new instances
+- include: vms_create.yaml
+
+# attach volumes to vms
+- include: vms_mount.yaml
+
+# include vms deletion steps
+- include: vms_delete.yaml
+  tags: never

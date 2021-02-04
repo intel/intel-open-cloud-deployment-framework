@@ -1,0 +1,43 @@
+# python path
+pythonbin: /usr/bin/python3
+pipbin: "{{ targetenv }}/bin/pip3"
+
+# path to virtual env
+targetenv: "{{ local_cache }}/cephvenv"
+
+# paramters for cloning ceph ansible repo
+ceph_ansible_repo: "{{ ceph_ansible_repository }}"
+ceph_ansible_dest: "{{ local_cache }}/ceph-ansible"
+ceph_ansible_vers: "{{ ceph_ansible_version }}"
+
+# latest commit 7d088320df1c4a6ed458866c61616a21fddccfe8
+# Author: Dimitri Savineau <dsavinea@redhat.com>
+# Date:   Wed Dec 9 17:05:25 2020 -0500
+ceph_ansible_tar: "{{ role_path }}/files/source/ceph-ansible-stable-5.0.tar.gz"
+ceph_ansible_dir: "{{ ceph_ansible_dest }}"
+
+# ceph binary installed in system
+ceph_bin: /usr/bin/ceph
+
+# get hosts from inventory hosts
+ceph_hosts: "{{ ' '.join(ceph_inventory_hosts) }}"
+
+# variables for modification of group_vars/all.yml
+ceph_all_sample: "{{ ceph_ansible_dest }}/group_vars/all.yml.sample"
+ceph_all_conf: "{{ ceph_ansible_dest }}/group_vars/all.yml"
+# variables appended to group_vars/all.yml
+ceph_app_sample: all.j2
+ceph_app_file: "{{ local_temp }}/all.yaml"
+ceph_app_vars: "{{ lookup('file', '{{ ceph_app_file }}') }}"
+
+# variables for duplication of site.yml
+ceph_site_sample: "{{ ceph_ansible_dest }}/site.yml.sample"
+ceph_site_conf: "{{ ceph_ansible_dest }}/site.yml"
+
+# hosts samples
+ceph_hosts_ini: hosts.ini
+ceph_hosts_sample: "{{ local_temp }}/hosts.yaml"
+ceph_hosts_conf: "{{ ceph_ansible_dest }}/hosts.yml"
+
+# logging file
+logfile: "{{ local_temp }}/ceph-ansible.log"

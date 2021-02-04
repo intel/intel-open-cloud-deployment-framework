@@ -1,0 +1,20 @@
+- name: Generate inventory hosts
+  shell: 'CONFIG_FILE="{{ ceph_hosts_ini }}" CONFIGED_FILE="{{ ceph_hosts_sample }}"
+          {{ pythonbin }} inventory.py {{ ceph_hosts }}'
+  args:
+    chdir: "{{ role_path }}/files"
+  register: result
+
+- debug: msg="{{ result.stdout_lines }}"
+  when: debug_mode | bool
+
+- set_fact:
+    ceph_subnet_mask: "{{ (result.stdout | regex_search('subnet_mask.*')).split()[1] }}" 
+
+- debug: msg="{{ ceph_subnet_mask }}"
+  when: debug_mode | bool
+
+- name: Generate additional contents in all.yaml
+  template:
+    src: "{{ ceph_app_sample }}"
+    dest: "{{ ceph_app_file }}"

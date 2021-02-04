@@ -1,0 +1,113 @@
+- block:
+    - name: Clone kolla_ansible repository
+      git:
+        repo: "{{ kolla_ansible_repo }}"
+        dest: "{{ kolla_ansible_dest }}"
+        version: "{{ kolla_ansible_vers }}"
+        force: yes
+      register: clone_result
+      async: 120
+      poll: 10
+
+    - debug: msg="{{ clone_result }}"
+      when: debug_mode | bool
+  rescue:
+    - name: Create {{ kolla_ansible_dir }}
+      file:
+        path: "{{ kolla_ansible_dir }}"
+        state: directory
+
+    - name: Use local kolla-ansible tarball
+      command: >
+        tar xzf {{ kolla_ansible_tar }} -C {{ kolla_ansible_dir }}
+        --strip-components 1
+
+- block:
+    - name: Clone kolla repository
+      git:
+        repo: "{{ kolla_repo }}"
+        dest: "{{ kolla_dest }}"
+        version: "{{ kolla_vers }}"
+      register: clone_result
+      async: 120
+      poll: 10
+
+    - debug: msg="{{ clone_result }}"
+      when: debug_mode | bool
+  rescue:
+    - name: Create {{ kolla_dir }}
+      file:
+        path: "{{ kolla_dir }}"
+        state: directory
+
+    - name: Use local kolla tarball
+      command: tar xzf {{ kolla_tar }} -C {{ kolla_dir }} --strip-components 1
+
+# Fix comparison issue between docker_version_min and latest 20.x.x
+- include: docker.yaml
+
+- name: Install requirements of kolla and kolla-ansible
+  pip:
+    name: "{{ kolla_ansible_dir }}, {{ kolla_dir }}"
+    virtualenv: "{{ targetenv }}"
+
+- name: Copy yaml and inventory files
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ item.user }}"
+    group: "{{ item.user }}"
+    mode: u=rw,g=wr,o=wr
+  become: true
+  with_items:
+    # Copy globals.yml and passwords.yml to /etc/kolla/
+    - { src: "{{ kolla_ansible_dir }}/etc/kolla/", dest: "{{ etc_kolla }}", user: "{{ local_user}}" }
+    # Copy all-in-one and multinode inventory files
+    - { src: "{{ kolla_ansible_dir }}/ansible/inventory/", dest: "{{ ka_inventory }}", user: "{{ local_user}}" }
+
+# Configurate files copied above
+# Prepare globals.yml
+- block:
+    - set_fact:
+        temp: "{{ local_temp }}/globals.yml"
+        gyml: "{{ etc_kolla }}/globals.yml"
+
+    - name: Generate new global varibales
+      template:
+        src: globals.j2
+        dest: "{{ temp }}"
+
+    - name: Append global variables to /etc/kolla/globals.yml
+      blockinfile:
+        path:  "{{ gyml }}"
+        block: "{{ lookup('file', '{{ temp }}') }}"
+
+    - name: Remove temporary file
+      file:
+        path: "{{ temp }}"
+        state: absent
+  become: true
+
+# Prepare multinode
+- block:
+    - set_fact:
+        multinode: "{{ ka_inventory }}/multinode"
+
+    - set_fact:
+        objconfs:
+          - { ini: '{{ multinode }}', section: control,    options: '{{ ops_controls }}' }
+          - { ini: '{{ multinode }}', section: network,    options: '{{ ops_networks }}' }
+          - { ini: '{{ multinode }}', section: monitoring, options: '{{ ops_monitors }}' }
+          - { ini: '{{ multinode }}', section: compute,    options: '{{ ops_computes }}' }
+          - { ini: '{{ multinode }}', section: storage,    options: '{{ ops_storages }}' }
+
+    - include: configini.yaml objconf={{ outside_item }}
+      with_items: "{{ objconfs }}"
+      loop_control:
+        loop_var: outside_item
+
+# Prepare passwords.yml
+- name: Fill /etc/kolla/passwords.yml
+  shell: source "{{ targetenv }}/bin/activate" &&  python generate_passwords.py
+  args:
+    chdir: "{{ kolla_ansible_tool }}"

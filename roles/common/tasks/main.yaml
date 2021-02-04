@@ -1,0 +1,22 @@
+- name: Install tools and utility packages
+  yum:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+    - wget
+    - curl
+    - unzip
+    - git
+    - gcc
+    - net-tools
+    - gcc-c++
+    - autoconf
+    - automake
+    - make
+    - python-pip
+    - dmidecode
+    - jq
+  become: true
+
+- include: centos.yaml

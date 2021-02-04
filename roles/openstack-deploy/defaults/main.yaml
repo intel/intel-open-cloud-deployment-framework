@@ -1,0 +1,62 @@
+local_temp: "{{ glocaltemp }}"
+local_cache: "{{ glocalcache }}"
+debug_mode: true
+
+# Repository url to download kolla_ansible
+kolla_ansible_repository: https://github.com/openstack/kolla-ansible
+kolla_ansible_version: 9.2.0
+
+# Repository url to download kolla
+kolla_repository: https://github.com/openstack/kolla
+kolla_version: "{{ kolla_ansible_version }}"
+
+# Global variables setting for openstack deployment using kolla-ansible
+ops_external_ceph: false
+ops_local_registry: true
+ops_docker_registry: 10.67.125.23:4000
+ops_docker_namespace: aep-poc
+ops_kolla_internal_vip_address: 10.0.10.123
+ops_network_interface: eth0
+ops_network_external_interface: tap0
+
+# Defined hosts from inventory/hosts
+ops_controls: "{{ groups['controller_hosts'] }}"
+ops_computes: "{{ groups['compute_hosts'] }}"
+ops_networks: "{{ groups['neutron_hosts'] }}"
+ops_storages: "{{ groups['compute_hosts'] }}"
+ops_monitors: "{{ groups['controller_hosts'] }}"
+
+# Use virtual NIC to replace physical card
+ops_virtual_nic_enabled: true
+
+# User's setting for preparing resources before creating VMs
+glance_image_path: "{{ local_cache }}/os_images/centos7.qcow2"
+glance_image_name: Centos
+glance_image_type: linux
+glance_disk_format: qcow2
+
+flavor_id_base: 1
+flavor_ram_size: 2048 #M
+flavor_disk_size: 10  #G
+flavor_vcpus_num: 1
+flavor_multi_fact: 2
+
+ceph_backend_enabled: "{{ 'true' if ops_external_ceph else 'false' }}"
+cinder_volume_num:  3
+cinder_volume_size: 20 #G
+
+# Apply all ports from 1-65535 to security group rule
+sg_rule_all_port: true
+
+quota_instances_num: 40
+quota_cores_num: 64
+quota_ram_capacity: 96000 #M
+
+# Network and subnet name setting
+external_network_name: "public_net"
+external_subnet_name: "public_subnet"
+internal_network_name: "private_net"
+internal_subnet_name: "private_subnet"
+
+# Override by same variable in group_vars/all
+vm_pmem_enabled: false

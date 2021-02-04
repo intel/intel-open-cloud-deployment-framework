@@ -1,0 +1,51 @@
+# Copy shell script prepare_resource.sh to remote
+- name: Copy shell script prepare_resource.sh to remote
+  copy:
+    src: "{{ item }}"
+    dest: "{{ local_temp }}/{{ item }}"
+    mode: u+rxw,g-rwx,o-rwx
+  with_items:
+    - prepare_resource.sh
+    - show_resources.sh
+
+# Prepare openstack resource
+- name: Prepare openstack resource
+  shell: /bin/bash prepare_resource.sh > prepare_resource.txt
+  args:
+    chdir: "{{ local_temp }}"
+  environment:
+    OPS_IMAGE_PATH: "{{ glance_image_path }}"
+    OPS_IMAGE_NAME: "{{ glance_image_name }}"
+    OPS_IMAGE_TYPE: "{{ glance_image_type }}"
+    OPS_DISK_FORMAT: "{{ glance_disk_format }}"
+    OPS_VIRTUAL_PATH:  "{{ targetenv }}"
+    OPS_ID_BASE: "{{ flavor_id_base }}"
+    OPS_RAM_SIZE: "{{ flavor_ram_size }}"
+    OPS_DISK_SIZE: "{{ flavor_disk_size }}"
+    OPS_VCPUS_NUM: "{{ flavor_vcpus_num }}"
+    OPS_MULTI_FACT: "{{ flavor_multi_fact }}"
+    OPS_CEPH_BACKEND_ENABLED: "{{ 'true' if ceph_backend_enabled else 'false'}}"
+    OPS_VOLUME_NUM: "{{ cinder_volume_num }}"
+    OPS_VOLUME_SIZE: "{{ cinder_volume_size }}"
+    OPS_SG_RULE_ALL_PORT: "{{ 'true' if sg_rule_all_port else 'false' }}"
+    OPS_QUOTA_INST_NUM: "{{ quota_instances_num }}"
+    OPS_QUOTA_CORE_NUM: "{{ quota_cores_num }}"
+    OPS_QUOTA_RAM_SIZE: "{{ quota_ram_capacity }}"
+    OPS_EX_NETWORK_NAME: "{{ external_network_name }}"
+    OPS_EX_SUBNET_NAME: "{{ external_subnet_name }}"
+    OPS_IN_NETWORK_NAME: "{{ internal_network_name }}"
+    OPS_IN_SUBNET_NAME: "{{ internal_subnet_name }}"
+    OPS_VM_PMEM_ENABLED: "{{ 'true' if vm_pmem_enabled else 'false'}}"
+
+- block:
+    - name: Get created resources
+      shell: /bin/bash show_resources.sh
+      args:
+         chdir: "{{ local_temp }}"
+      register: rc_show
+      environment:
+        OPS_VIRTUAL_PATH:  "{{ targetenv }}"
+
+    - name: Show created resources
+      debug: msg="{{ rc_show.stdout_lines }}"
+  when: debug_mode | bool

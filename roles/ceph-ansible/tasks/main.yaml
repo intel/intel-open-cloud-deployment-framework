@@ -1,0 +1,27 @@
+# check the ceph install already
+- name: Test ceph cluster existing
+  shell: command -v "{{ ceph_bin }}"
+  register: ceph_exist
+  ignore_errors: yes
+
+- block:
+    - name: Skip the deployment of ceph
+      debug: msg="[Warning] Ceph cluster is running"
+
+    - include: "{{ role_path }}/handlers/main.yaml"
+  when: ceph_exist.rc == 0 and debug_mode | bool
+
+# setup envionment to deploy ceph
+- include: env.yaml
+  when: ceph_exist.rc == 1
+
+# run deployment using ceph-ansible
+- include: deploy.yaml
+  when: ceph_exist.rc == 1
+
+# Disable firewalld for ceph-k8s deployment
+- name: Disable firewalld
+  systemd:
+    name: firewalld
+    state: stopped
+  become: true

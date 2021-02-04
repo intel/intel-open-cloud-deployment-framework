@@ -1,0 +1,7 @@
+# Temporary directory
+workdir: "{{ local_temp }}"
+
+# Files to duplicated
+srctarz: script.tar.gz
+epelrep: epel.repo
+rscript: runproxy.sh

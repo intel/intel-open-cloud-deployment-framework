@@ -1,0 +1,16 @@
+# They also need to store the secret key of the client.cinder user in libvirt.
+# The libvirt process needs it to access the cluster while attaching a block device from Cinder.
+# Create a temporary copy of the secret key on the nodes running nova-compute:
+# This key create from controller but will be copied to compute in ceph-compute
+- name: Get client keys created in keyrings
+  block:
+    - name: Get or create client key
+      command: ceph auth get-key client.{{ item }}
+      register: cmd_output
+
+    - name: Copy generated client key to {{ cephconfig }}
+      copy:
+        content: "{{ cmd_output.stdout }}"
+        dest: "{{ cephconfig }}/client.{{ item }}.key"
+# with_items:
+#   - cinder

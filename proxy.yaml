@@ -1,0 +1,10 @@
+- name: Deploy transparent proxy on each host
+  hosts: proxy_hosts
+  remote_user: "{{ ansible_ssh_user }}"
+  vars:
+    prtrace: false # log tracking for key points
+    local_temp: "{{ glocaltemp }}"
+  environment:
+    LOCALTEMP: "{{ glocaltemp }}"
+  roles:
+     - proxy

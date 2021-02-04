@@ -1,0 +1,5 @@
+- name: Create/Delete new/running VMs
+  hosts: deployment_host
+  remote_user: "{{ ansible_ssh_user }}"
+  roles:
+    - openstack-instance

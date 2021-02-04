@@ -1,0 +1,32 @@
+{
+    "Warning": "Please put the ones with the same label together!",
+    "Warning": "Please put the ones with the same label together!",
+    "Warning": "Please put the ones with the same label together!",
+    "Warning": "Only the ones put into 'namespace' are the valid!",
+    "Warning": "Only the ones put into 'namespace' are the valid!",
+    "Warning": "Only the ones put into 'namespace' are the valid!",
+    "namespace":[
+        {
+            "name":"ns0",
+            "size":"132G",
+            "label":"MEDIUM"
+        },
+        {
+            "name":"ns1",
+            "size":"132G",
+            "label":"MEDIUM"
+        }
+    ],
+    "outside namespace":[
+        {
+            "name":"ns2",
+            "size":"258GG",
+            "label":"LARGE"
+        },
+        {
+            "name":"ns3",
+            "size":"258GG",
+            "label":"LARGE"
+        }
+    ]
+}

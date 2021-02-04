@@ -1,0 +1,60 @@
+- name: Register JSON output as a variable
+  shell: cat {{ role_path }}/files/ns.json
+  register: result
+  delegate_to: localhost
+  run_once: true
+
+- name: Set a variable
+  set_fact:
+    nsconf: "{{ result.stdout | from_json }}"
+
+- name: Dump the namespace config file
+  debug: msg="{{ nsconf}}"
+  when: debug_mode | bool
+
+- name: Defined a empty label list
+  set_fact:
+    # define a empty list
+    label_list: []
+
+- name: Get all labels from namespace config file
+  set_fact:
+    label_list: "{{ label_list + [item.label] }}"
+  loop: "{{ nsconf.namespace }}"
+
+- name: Remove the duplicate label from label_list
+  set_fact:
+    labels: "{{ label_list | unique}}"
+
+- name: Dump all labels that no duplication
+  debug: msg="{{ labels }}"
+  when: debug_mode | bool
+
+# create /etc/kolla/config/nova/nova-compute.conf to override configuration of services
+- set_fact:
+    confdir: /etc/kolla/config/nova/
+    confile: nova-compute.conf
+
+- name: Create {{ confdir }}
+  file:
+    path: "{{ confdir }}"
+    state: directory
+
+- name: Create nova.conf to {{ confdir }}
+  template:
+    src: nova.j2
+    dest: "{{ confdir }}/{{ confile }}"
+
+- command: cat {{ confdir }}/{{ confile }}
+  register: result
+
+- name: Dump {{ confdir }}/nova.conf
+  # Lookups occur on the local computer, not on the remote computer.
+  #debug: msg="{{ lookup('file', '{{ confdir }}/{{ confile }}') }}"
+  debug: msg="{{ result.stdout_lines }}"
+  when: debug_mode | bool
+
+- name: Warning
+  debug: msg="[Warning] {{ confile }} has been copied to {{ confdir }} on local host [controller node] before deployment of OpenStack"
+- name: Warning
+  debug: msg="[Warning] Please ensure 'node_custom_config' in /etc/kolla/globals.yml is uncommented"

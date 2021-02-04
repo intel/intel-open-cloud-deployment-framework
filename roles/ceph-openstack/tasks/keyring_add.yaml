@@ -1,0 +1,22 @@
+- name: Generate new keyrings to the appropriate files
+  block:
+    - name: Get or create client keyring file
+      command: ceph auth get-or-create client.{{ item }}
+      register: cmd_output
+
+    - name: Copy generated keyring file to {{ cephconfig }}
+      copy:
+        content: "{{ cmd_output.stdout }}"
+        dest: "{{ cephconfig }}/ceph.client.{{ item }}.keyring"
+    
+    # Essential for keyring file
+    - name: Append a empty line to keyring file
+      lineinfile:
+        dest: "{{ cephconfig }}/ceph.client.{{ item }}.keyring"
+        # Add a line or '\n' is OK
+        line: ''
+# # resused or included from externel task  
+# with_items:
+#   - glance
+#   - cinder
+#   - cinder-backup

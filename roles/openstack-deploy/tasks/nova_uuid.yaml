@@ -1,0 +1,32 @@
+# Reset nova secret uuid in /etc/kolla/nova-compute/nova.conf
+# on each compute node
+- block:
+    - name: Filter uuid ceph client.nova secret
+      shell: >
+        virsh secret-list | grep "ceph client.nova secret" | cut -d ' ' -f 2
+      register: secret_uuid
+      ignore_errors: True
+      become: true
+
+    - name: Check if nova secret uuid is empty
+      debug: msg="nova secret uuid is empty, skip setting"
+      when: secret_uuid.stdout == "" or secret_uuid.stdout.find('error') != -1
+  when: ansible_default_ipv4.address == item
+
+- block:
+    - debug: msg="Get nova secret uuid {{ secret_uuid.stdout }}"
+      when: debug_mode | bool
+
+    - name: Changed rbd_secret_uuid in /etc/kolla/nova-compute/nova.conf
+      ini_file:
+        path: /etc/kolla/nova-compute/nova.conf
+        section: libvirt
+        option: rbd_secret_uuid
+        value: "{{ secret_uuid.stdout }}"
+        backup: yes
+      become: true
+
+    - name: Restart nova_compute container
+      command: docker restart nova_compute
+      become: true
+  when: ansible_default_ipv4.address == item and secret_uuid.stdout != ""

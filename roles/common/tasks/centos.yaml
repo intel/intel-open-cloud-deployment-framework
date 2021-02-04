@@ -1,0 +1,60 @@
+- name: Test docker existing
+  shell: command -v docker
+  register: docker_exist
+  ignore_errors: yes
+  when: enable_docker_repo | bool
+
+- include: docker.yaml
+  when: enable_docker_repo | bool
+
+- name: Test cmake existing
+  shell: command -v cmake > /dev/null 2>&1
+  register: cmake_exist
+  ignore_errors: yes
+
+- block:
+    - name: Create {{ cmake_tarball_dir }}
+      file:
+        path: "{{ item }}"
+        state: directory
+      with_items:
+        - "{{ cmake_tarball_dir }}"
+        - "{{ cmake_source_dir }}"
+
+    - name: Download {{ cmake_tarball_url }}
+      get_url:
+        url: "{{ cmake_tarball_url }}"
+        dest: "{{ cmake_tarball_dir }}"
+
+    - name: Extract {{ cmake_tarball_dest }} into {{ cmake_source_dir }}
+      unarchive:
+        src: "{{ cmake_tarball_dest }}"
+        dest: "{{ cmake_source_dir }}"
+        remote_src: yes
+        extra_opts: [--strip-components=1]
+
+    - name: Compile and install cmake
+      shell: "{{ item }}"
+      with_items:
+        - "./bootstrap --prefix=/usr/local"
+        - "make -j$(nproc)"
+        - "make install"
+      args:
+        chdir: "{{ cmake_source_dir }}"
+      become: true
+
+    - name: Create a symbolic link
+      file:
+        src: /usr/local/bin/cmake
+        dest: /bin/cmake
+        state: link
+      become: true 
+  when: cmake_exist.rc == 1
+
+- block:
+    - name: List cmake version
+      shell: cmake --version
+      register: cmake_version
+
+    - debug: msg="{{ cmake_version }}"
+      when: debug_mode | bool

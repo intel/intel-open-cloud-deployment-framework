@@ -1,0 +1,65 @@
+# Copy shell script common_vm_create.sh to remote
+- name: Copy shell script common_vm_create.sh to remote
+  copy:
+    src: "{{ item }}"
+    dest: "{{ local_temp }}/{{ item }}"
+    mode: u+rxw,g-rwx,o-rwx
+  with_items:
+    - vm_create.sh
+    - pmem_vm_create.sh
+    - user_data.sh
+
+- name: Run instances
+  shell: /bin/bash vm_create.sh > {{ local_temp }}/common_vm_create.txt
+  args:
+    chdir: "{{ local_temp }}"
+  when: vm_pmem_enabled == false | bool
+  environment:
+    OPS_VM_IMAGE:     "{{ vm_image }}"
+    OPS_VM_NAME:      "{{ vm_prefix }}"
+    OPS_VM_NUM:       "{{ vm_number }}"
+    OPS_VM_FLAVOR:    "{{ vm_flavor }}"
+    OPS_VM_KEY:       "{{ vm_key }}"
+    OPS_VM_NETWORK:   "{{ vm_network }}"
+    OPS_VIRTUAL_PATH: "{{ targetenv }}"
+    OPS_VM_UD_PATH: "{{ vm_ud_path }}"
+
+- name: Run instances with PMEM
+  shell: /bin/bash pmem_vm_create.sh > {{ local_temp }}/pmem_vm_create.txt
+  args:
+    chdir: "{{ local_temp }}"
+  when: vm_pmem_enabled == true | bool
+  environment:
+    OPS_VM_IMAGE:     "{{ vm_image }}"
+    OPS_VM_NAME:      "{{ vm_pmem_prefix }}"
+    OPS_VM_NUM:       "{{ vm_number }}"
+    OPS_VM_FLAVOR:    "{{ vm_pmem_flavor }}"
+    OPS_VM_KEY:       "{{ vm_key }}"
+    OPS_VM_NETWORK:   "{{ vm_network }}"
+    OPS_VIRTUAL_PATH: "{{ targetenv }}"
+    OPS_VM_UD_PATH: "{{ vm_ud_path }}"
+
+- name: Wait all creating servers for starting
+  script: vm_status.sh
+  register: vms_status
+  environment:
+    OPS_VIRTUAL_PATH: "{{ targetenv }}"
+  until:
+    # All vms transited to only one status
+    - (vms_status.stdout|trim).split(' ')|unique|count|int == 1
+    # And vms pods were running
+    - (vms_status.stdout|trim).split(' ')|unique == ["active"]
+  retries: "{{ vm_start_timeout }}"
+  delay: "{{ vm_start_timeout }}"
+  ignore_errors: yes
+  failed_when: false # hide fatal error messages if ignored
+
+- name: Check if one or more VMs on error status
+  fail: msg="[Error] One or more VMs' status are ERROR"
+  when: vms_status.stdout.find('error') != -1
+
+- name: Check if one or more VMs are still on build status
+  debug: msg="[Warning] Please check the status of VMs on manually"
+  when:
+    - vms_status.stdout.find('build') != -1
+    #- debug_mode | bool

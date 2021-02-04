@@ -1,0 +1,15 @@
+- name: copy all files to remote
+  copy: src={{ item.src }} dest={{ workdir }} mode={{item.mode}} 
+  with_items:
+    - { src: "{{ srctarz }}", mode: 0644}
+    - { src: "{{ epelrep }}", mode: 0644}
+    - { src: "{{ rscript }}", mode: 0777}
+
+- name: run script to setup proxy
+  shell: /bin/bash {{ workdir }}/{{ rscript }}
+  register: result
+
+- name: proxy script running
+  debug:  
+    msg: "{{result.stdout_lines}}"
+  when: result.rc == 0 and prtrace | bool

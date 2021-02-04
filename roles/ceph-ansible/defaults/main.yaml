@@ -1,0 +1,22 @@
+local_temp: "{{ glocaltemp }}"
+local_cache: "{{ glocalcache }}"
+debug_mode: true
+
+# Configuration that deploys the upstream version of Ceph
+ceph_origin: repository
+ceph_repository: community
+ceph_stable_release: octopus
+ceph_network_ifg: eth0
+ceph_block_device: /dev/vdb
+ceph_subnet_mask: 10.0.10.0/24
+
+# Get hosts from inventory/hosts
+ceph_inventory_hosts: "{{ groups['ceph_hosts'] }}"
+
+# Repository url to download ceph_ansible
+ceph_ansible_repository: https://github.com/ceph/ceph-ansible.git
+ceph_ansible_version: stable-5.0
+
+# Customized ceph repository when config ceph_repository: custom
+ceph_custom_key: http://10.67.125.13/ceph/x86_64/repodata/repomd.xml.asc
+ceph_custom_repo: http://10.67.125.13/ceph/x86_64/

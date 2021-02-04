@@ -1,0 +1,56 @@
+# Configure global network proxy
+- name: Set up proxy environment
+  set_fact:
+    proxy_env:
+      http_proxy: "{{ http_proxy | default ('') }}"
+      HTTP_PROXY: "{{ http_proxy | default ('') }}"
+      https_proxy: "{{ https_proxy | default ('') }}"
+      HTTPS_PROXY: "{{ https_proxy | default ('') }}"
+      no_proxy: "{{ no_proxy | default ('') }}"
+      NO_PROXY: "{{ no_proxy | default ('') }}"
+  no_log: true
+
+- block:
+    - name: Generate network proxy variables
+      template:
+        src: global_proxy.j2
+        dest: "{{ local_temp }}/netproxy.{{ ansible_default_ipv4.address }}"
+      delegate_to: localhost
+
+    - name: Append network proxy variables in global profile
+      blockinfile:
+        path:  /etc/profile
+        block: "{{ lookup('file',
+        '{{ local_temp }}/netproxy.{{ ansible_default_ipv4.address }}') }}"
+      become: true
+
+    - name: Delete temporary files
+      file:
+        path: "{{ local_temp }}/netproxy.{{ ansible_default_ipv4.address }}"
+        state: absent
+
+    - name: Export network proxy variables
+      shell: source /etc/profile
+
+# Configure docker proxy
+- block:
+    - name: Generate docker proxy
+      template:
+        src: docker_proxy.j2
+        dest: /etc/systemd/system/docker.service.d/http-proxy.conf
+
+    - name: Reload docker services
+      systemd:
+        name: docker
+        state: restarted
+        daemon_reload: yes
+  become: true
+
+# Configure yum proxy
+- name: Set yum proxy
+  ini_file:
+    path: /etc/yum.conf
+    section: main
+    option: proxy
+    value: "{{ http_proxy }}"
+  become: true

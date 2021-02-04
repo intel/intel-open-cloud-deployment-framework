@@ -1,0 +1,20 @@
+# Create virtual NIC
+- name: Check if virtual NIC tap0 already exists
+  shell: /usr/sbin/ip a
+  register: vnic_show
+  when:
+    - virtual_nic_enabled | bool
+    - ansible_default_ipv4.address == item
+
+- block:
+    - name: Create virtual NIC tap0 on neutron server node
+      command: ip tuntap add dev tap0 mode tap
+      register: vnic_result
+      ignore_errors: True
+      failed_when: false
+  when:
+    - virtual_nic_enabled | bool
+    - ansible_default_ipv4.address == item
+    - vnic_show.stdout.find('tap0') == -1
+  become: true
+# with_items: "{{ ops_networks }}"

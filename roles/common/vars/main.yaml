@@ -1,0 +1,5 @@
+# CMAKE Packacges
+cmake_tarball_url: https://cmake.org/files/v3.12/cmake-3.12.3.tar.gz
+cmake_tarball_dir: "{{ local_cache }}/Packages/"
+cmake_tarball_dest: "{{ cmake_tarball_dir }}/{{ cmake_tarball_url | basename }}"
+cmake_source_dir: "{{ cmake_tarball_dir }}/cmake"

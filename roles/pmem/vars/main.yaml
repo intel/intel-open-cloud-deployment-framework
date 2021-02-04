@@ -1,0 +1,20 @@
+# prerequisite packages
+pmem_pkgs: ndctl,ndctl-libs,ndctl-devel,libsafec,rubygem-asciidoctor,autossh
+
+# paramters for cloning ipmctl repo
+ipmctl_repo: "{{ ipmctl_repository }}"
+ipmctl_dest: "{{ local_cache }}/ipmctl"
+ipmctl_vers: "{{ ipmctl_version }}"
+ipmctl_bin: /usr/bin/ipmctl
+
+# local downloaded source
+ipmctl_loc: v02.00.00.3830.tar.gz
+ipmctl_src: "{{ role_path }}/files/source/{{ ipmctl_loc }}"
+ipmctl_dir: "{{ ipmctl_dest }}"
+ipmctl_tar: "{{ ipmctl_dir }}/{{ ipmctl_loc }}"
+
+# scrips running on target server
+ipmctl_cmp: ipmctl_install.sh
+ipmctl_shm: ipmctl_showmrc.sh
+ipmctl_set: ipmctl_setupvars.sh
+ipmctl_chm: ipmctl_chmmode.sh

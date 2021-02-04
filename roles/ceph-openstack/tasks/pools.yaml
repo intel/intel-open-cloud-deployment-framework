@@ -1,0 +1,23 @@
+- name: Create rbd pool
+  block:
+    - name: Create pool {{ item.name }} with size {{ item.size }}
+      command: ceph osd pool create {{ item.name }} {{ item.size }}
+      with_items: 
+        # Create volume pool for cinder
+        - { name: volumes, size: 16 }
+        # Create images pool for glance
+        - { name: images, size: 16 }
+        # Create vms pool for nova
+        - { name: vms, size: 16 }
+        # Create backups pool for cinder
+        - { name: backups, size: 16 }
+      notify: "List created pools"
+
+- name: Initialize new pool {{ item }}
+  command: rbd pool init {{ item }}
+  with_items: 
+    - volumes
+    - images
+    - vms
+    - backups
+  notify: "List created pools"
