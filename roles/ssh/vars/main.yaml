@@ -1,0 +1,5 @@
+# Dependent directory and files
+SSHDIR: ~/.ssh
+RSAFIL: "{{ SSHDIR }}/id_rsa"
+RSAPUB: "{{ SSHDIR }}/id_rsa.pub"
+RSATMP: "{{ local_temp}}/id_rsa_all.pub"

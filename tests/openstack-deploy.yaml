@@ -1,0 +1,7 @@
+- name: Deploy openstack using kolla-ansible
+  hosts: all_hosts
+  remote_user: "{{ ansible_ssh_user }}"
+  roles:
+    - baremetal
+    - common
+    - openstack-deploy

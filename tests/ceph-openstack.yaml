@@ -1,0 +1,8 @@
+- include: ceph.yaml
+
+- name: Config block device and external ceph to openstack
+  hosts: ceph_openstack
+  become: true
+  remote_user: "{{ ansible_ssh_user }}"
+  roles:
+    - ceph-openstack

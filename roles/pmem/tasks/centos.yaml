@@ -1,0 +1,55 @@
+- name: Install the prerequisite packages
+  yum:
+    name: "{{ pmem_pkgs }}"
+    state: present
+
+- name: Check the ipmctl tool in system
+  shell: command -v "{{ ipmctl_bin }}"
+  register: bin_exist
+  ignore_errors: yes
+
+# set ipmctl_bin to the ipmctl installed in system
+- set_fact:
+    ipmctl_bin: "{{ ipmctl_bin }}"
+  when: bin_exist.rc == 0
+
+- include: verify.yaml
+  when: bin_exist.rc == 0
+
+# compile ipmctl from source
+- include: install.yaml
+
+# make a comparsion between current mode and target mode
+- include: verify.yaml
+  when: bin_exist.rc == 1
+
+# destroy all existing namespaces before conversion
+- include: destroyns.yaml
+
+- name: Configures all the PMem module capacity
+  shell: "/bin/bash {{ ipmctl_dest }}/{{ ipmctl_chm }} {{ pmem_mode }}"
+  register: result
+
+- name: Print mode configuration of ipmctl
+  debug: msg="{{ result.stdout_lines }}"
+  when: debug_mode | bool
+
+- name: Reboot immediately to process new memory allocation goals
+  shell: "sleep 5 && reboot"
+  async: 1
+  poll: 0
+
+- name: Wait for the reboot to complete.
+  wait_for_connection:
+    connect_timeout: 30
+    delay: 60
+    sleep: 5
+    timeout: 600
+
+- name: Show memory resource to validate new model
+  shell: "/bin/bash {{ ipmctl_dest }}/{{ ipmctl_shm }}"
+  register: result
+
+- name: Print log of the last operation
+  debug: msg="{{ result.stdout_lines }}"
+  when: debug_mode | bool

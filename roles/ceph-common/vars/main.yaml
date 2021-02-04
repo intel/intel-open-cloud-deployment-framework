@@ -1,0 +1,6 @@
+pythonsrc: epel-release, python36
+pythonpkg: ruamel.yaml ansible
+
+# python path
+pythonbin: /usr/bin/python3
+pip2bin: /usr/bin/pip

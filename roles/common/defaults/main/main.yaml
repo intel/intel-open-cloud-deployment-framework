@@ -1,0 +1,5 @@
+local_temp: "{{ glocaltemp }}"
+local_cache: "{{ glocalcache }}"
+debug_mode: true
+
+enable_docker_repo: true

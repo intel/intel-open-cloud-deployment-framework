@@ -1,0 +1,23 @@
+# Install Python build dependencies
+- name: Install Python build dependencies
+  package:
+    name: >
+      python-devel, libffi-devel, openssl-devel, libselinux-python,
+      python-virtualenv
+    state: present
+  become: true
+
+# Create a virtual environment and activate it
+- name: Create a virtual environment
+  command: "virtualenv {{ targetenv }}"
+
+- name: Install kolla_ansible to system
+  pip:
+    name: kolla-ansible==9.2.0
+  become: true
+
+- name: Install python packages to {{ targetenv }}
+  pip:
+    # Ensure the version of pip is not latest, pip install pip==9.0.1
+    name: pip==9.0.1, ansible<2.10, gitdb2==2.0.0
+    virtualenv: "{{ targetenv }}"

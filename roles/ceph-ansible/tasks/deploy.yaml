@@ -1,0 +1,63 @@
+- name: Get ceph-ansible
+  block:
+    - name: Clone ceph-ansible repository
+      git:
+        repo: "{{ ceph_ansible_repo }}"
+        dest: "{{ ceph_ansible_dest }}"
+        version: "{{ ceph_ansible_vers }}"
+      register: clone_result
+      async: 120
+      poll: 10
+
+    - debug: msg="{{ clone_result }}"
+      when: debug_mode | bool
+  rescue:
+    - name: Create {{ ceph_ansible_dir }}
+      file:
+        path: "{{ ceph_ansible_dir }}"
+        state: directory
+
+    - name: Use local ceph-ansible tarball
+      command: tar xzf {{ ceph_ansible_tar }} -C {{ ceph_ansible_dir }} --strip-components 1
+
+- name: Install ansible and other needed python libraries
+  pip:
+   requirements: "{{ ceph_ansible_dir }}/requirements.txt"
+   virtualenv: "{{ targetenv }}"
+
+- include: config.yaml
+
+# check the connection of host in {{ ceph_hosts_sample }}
+- block:
+    - name: Check the connection of host in {{ ceph_hosts_sample }}
+      command: ansible -i "{{ ceph_hosts_sample }}" -m ping all
+      register: result
+
+    - name: Abort playbook if checking failed on {{ ceph_hosts_sample }}
+      fail: msg="The check on "{{ ceph_hosts_sample }}" was failed, please check it"
+      when: result.rc ==  1
+  rescue:
+    - name: Abort playbook if checking failed on f{{ ceph_hosts_sample }}
+      fail: msg="The check on "{{ ceph_hosts_sample }}" did not pass, please verify that"
+
+- name: Copy .yml.sample to .yml
+  copy:
+    src:  "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  with_items:
+    - { src: "{{ ceph_all_sample }}", dest: "{{ ceph_all_conf }}" }
+    - { src: "{{ ceph_site_sample }}", dest: "{{ ceph_site_conf }}" }
+    - { src: "{{ ceph_hosts_sample }}", dest: "{{ ceph_hosts_conf }}" }
+
+- name: Insert custom group vars to group_vars/all.yml
+  blockinfile:
+    path:  "{{ ceph_all_conf }}"
+    block: "{{ ceph_app_vars }}"
+
+- name: Perform the deployment for ceph cluster
+  shell: |
+    source "{{ targetenv }}/bin/activate"
+    ansible-playbook "{{ ceph_site_conf }}" -i "{{ ceph_hosts_conf }}" > "{{ logfile }}"
+  args:
+    chdir: "{{ ceph_ansible_dest }}"
+  notify: "Show ceph status"

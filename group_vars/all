@@ -1,0 +1,131 @@
+# Ensure that all files and directory listed below can be accessed
+
+# Global cache directory for preparing all components and sources
+glocalcache: /home/centos/intel/
+
+# Global cache directory for saving temporary files
+glocaltemp: /tmp
+
+# Install docker-ce if docker not exist
+#enable_docker_repo: true
+
+# Repository url to ipmctl tool
+#ipmctl_repository: https://github.com/intel/ipmctl.git
+
+# Release version or branch of ipmctl tool
+#ipmctl_version: v02.00.00.383
+
+# AppDirect: AppDirect mode with all modules in an interleaved set [Default]
+# AppDirectNotInterleaved: AppDirect mode with all modules in an interleaved set
+# Other: Memory
+#pmem_mode: AppDirect
+
+# Absolute path to a json file for creating new PMEM namespaces
+# Default value is to roles/pmem-openstack/files/ns.json
+#pmem_namespace: "{{ glocaltemp }}/ns.json"
+
+# Repository url to download ceph_ansible
+#ceph_ansible_repository: https://github.com/ceph/ceph-ansible.git
+
+# Release version or branch of ceph_ansible
+#ceph_ansible_version: stable-5.0
+
+# Defined hosts from inventory/hosts
+#ceph_inventory_hosts: "{{ groups['ceph_hosts'] }}"
+
+# Configuration that deploys the upstream version of Ceph
+#ceph_origin: repository
+#ceph_repository: community
+#ceph_stable_release: octopus
+#ceph_network_ifg: eth0
+#ceph_block_device: /dev/vdb
+#ceph_subnet_mask: 10.0.10.0/24
+
+# Customized ceph repository
+# Config 'ceph_repository: custom' before enabling them
+#ceph_custom_key: http://10.67.125.13/ceph/x86_64/repodata/repomd.xml.asc
+#ceph_custom_repo: http://10.67.125.13/ceph/x86_64/
+
+# Proxy setting if needed
+#http_proxy: ''
+#https_proxy: ''
+#no_proxy: ''
+
+# Repository url to download kolla_ansible
+#kolla_ansible_repository: https://github.com/openstack/kolla-ansible
+
+# Release version or branch of kolla_ansible
+#kolla_ansible_version: 9.2.0
+
+# Repository url to download kolla
+#kolla_repository: https://github.com/openstack/kolla
+
+# Release version or branch of kolla_ansible
+#kolla_version: "{{ kolla_ansible_version }}"
+
+# Global variables setting for openstack deployment using kolla-ansible
+#ops_external_ceph: false
+#ops_local_registry: true
+#ops_docker_registry: 10.67.125.23:4000
+#ops_docker_namespace: aep-poc
+#ops_kolla_internal_vip_address: 10.67.125.23
+#ops_network_interface: eth0
+#ops_network_external_interface: tap0
+
+# Defined hosts from inventory/hosts
+#ops_controls: "{{ groups['controller_hosts'] }}"
+#ops_computes: "{{ groups['compute_hosts'] }}"
+#ops_networks: "{{ groups['neutron_hosts'] }}"
+#ops_storages: "{{ groups['compute_hosts'] }}"
+#ops_monitors: "{{ groups['controller_hosts'] }}"
+
+# Use virtual NIC to replace physical card
+#ops_virtual_nic_enabled: true
+
+# User's setting for preparing resources before creating VMs
+# glance image setting for openstack resources
+glance_image_path: "/home/centos/workspace/centos7.qcow2"
+#glance_image_name: Centos
+#glance_image_type: linux
+#glance_disk_format: qcow2
+
+# flavor setting for openstack resources
+#flavor_id_base: 1
+#flavor_ram_size: 2048 #M
+#flavor_disk_size: 10   #G
+#flavor_vcpus_num: 1
+#flavor_multi_fact: 2 # multiple factor of ram, cores and vcpus
+
+# cinder backend setting for openstack resources
+#ceph_backend_enabled: "{{ 'true' if ops_external_ceph else 'false' }}"
+#cinder_volume_num:  3
+#cinder_volume_size: 20 #G
+
+# Quota setting for openstack resources
+#quota_instances_num: 40
+#quota_cores_num: 64
+#quota_ram_capacity: 96000 #M
+
+# Network and subnet name setting for openstack resources
+#external_network_name: "public_net"
+#external_subnet_name: "public_subnet"
+#internal_network_name: "private_net"
+#internal_subnet_name: "private_subnet"
+
+# Virtual machine setting for openstack instances
+#vm_image: "{{ glance_image_name }}"
+#vm_prefix: demovm
+#vm_number: 3
+#vm_flavor: m1.small
+#vm_key: mykey
+#vm_network: "{{ internal_network_name }}"
+
+#vm_pmem_prefix: "pmem-{{ vm_prefix }}"
+#vm_pmem_enabled: false
+#vm_pmem_flavor: m1.small.pmem_medium
+
+# Device path in VMs as which attaching volume
+#vm_attach_device: /dev/vdb
+
+# Wait up to vm_start_timeout * vm_start_timeout seconds for VMs starting
+vm_start_timeout: 10

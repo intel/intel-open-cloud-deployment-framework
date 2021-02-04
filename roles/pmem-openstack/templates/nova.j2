@@ -1,0 +1,2 @@
+[libvirt]
+pmem_namespaces = {% set v_global = [] %}{% set x_global = [] %}{% for label in labels -%}{% set x_global = [] %}{{ label }}:{% for item in nsconf.namespace %}{% if item.label == label %}{% set v_global = [] %}{% if x_global %}|{% endif %}{{ item.name }}{% if x_global.append(1) %}{% endif %}{% else %}{% if not v_global %}{% if v_global.append('1') %}{% endif %},{% endif %}{% endif %}{% endfor %}{% if v_global.append('1') %}{% endif %}{%- endfor %}

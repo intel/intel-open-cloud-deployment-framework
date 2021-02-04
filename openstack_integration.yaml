@@ -1,0 +1,59 @@
+- name: Common setting and packages for environment setup
+  hosts: all_hosts
+  remote_user: "{{ ansible_ssh_user }}"
+  roles:
+    - baremetal
+    - common
+
+# AppDirect [default]: AppDirect mode with all modules in an interleaved set [Default]
+# AppDirectNotInterleaved: AppDirect mode with all modules in an interleaved set
+# Other: Memory
+# vars:
+#   ipmode: AppDirect
+#   ipmode: AppDirectNotInterleaved
+#   ipmode: Memory
+
+- name: Configures PMem module capacity in specified mode
+  hosts: pmem_hosts
+  remote_user: "{{ ansible_ssh_user }}" 
+  become: true
+  roles:
+     - pmem
+
+- name: Attach virtual persistent memory to guests
+  hosts: pmem_hosts
+  become: true
+  remote_user: "{{ ansible_ssh_user }}" 
+  roles:
+     - pmem-openstack
+
+- name: Set up the environment before ceph deployment
+  hosts: ceph_hosts
+  remote_user: "{{ ansible_ssh_user }}"
+  roles:
+    - ceph-common
+
+- name: Depoly ceph using ceph-ansible on controller
+  hosts: deployment_host
+  remote_user: "{{ ansible_ssh_user }}"
+  roles:
+    - ceph-ansible
+
+- name: Config block device and external ceph to openstack
+  hosts: ceph_openstack
+  become: true
+  remote_user: "{{ ansible_ssh_user }}"
+  roles:
+    - ceph-openstack
+
+- name: Deploy openstack using kolla-ansible
+  hosts: all_hosts
+  remote_user: "{{ ansible_ssh_user }}"
+  roles:
+    - openstack-deploy
+
+- name: Create/Delete new/running VMs
+  hosts: deployment_host
+  remote_user: "{{ ansible_ssh_user }}"
+  roles:
+    - openstack-instance

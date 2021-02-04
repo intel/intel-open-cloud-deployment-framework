@@ -1,0 +1,38 @@
+# Parse the return of ipmctl show -memoryresources
+#" MemoryType   | DDR         | PMemModule  | Total       ",
+#"========================================================",
+#" Volatile     | 383.000 GiB | 0.000 GiB   | 383.000 GiB",
+#" AppDirect    | -           | 504.000 GiB | 504.000 GiB",
+#" Cache        | 0.000 GiB   | -           | 0.000 GiB",
+#" Inaccessible | 1.000 GiB   | 1.689 GiB   | 2.689 GiB",
+#" Physical     | 384.000 GiB | 505.689 GiB | 889.689 GiB"
+- debug: msg="{{ ipmctl_bin  }}"
+  when: debug_mode | bool
+
+- name: Show memory resources using ipmctl tool
+  shell: "source {{ ipmctl_dest }}/{{ ipmctl_set }} && {{ ipmctl_bin }} show -memoryresources"
+  register: result
+
+- set_fact:
+    pmem_md: "{{ (result.stdout | regex_search('MemoryType.*')).split('|')[2] | trim }}"
+    mem_cap: "{{ (result.stdout | regex_search('Volatile.*')).split('|')[2] | trim }}"
+    ad_cap: "{{ (result.stdout | regex_search('AppDirect.*')).split('|')[2] | trim }}"
+
+- include: stat.yaml
+  with_items:
+    - { condition: ad_cap != "0.000 GiB" and mem_cap == "0.000 GiB", mode: "AppDirect" }
+    - { condition: ad_cap == "0.000 GiB" and mem_cap != "0.000 GiB", mode: "Memory" }
+    - { condition: ad_cap != "0.000 GiB" and mem_cap != "0.000 GiB", mode: "Mixed" }
+    - { condition: ad_cap == "0.000 GiB" and mem_cap == "0.000 GiB", mode: "Error" }
+  when: "{{ item.condition }}"
+
+- block:
+    - debug: msg="PMEM mode (AppDirect Capacity {{ ad_cap }} and Memory Capacity {{ mem_cap }}) do not need to be changed"
+      when: debug_mode | bool
+  when: pmem_mode == current_mode
+
+- fail: msg="Pmem modules in Error status AppDirect Capacity {{ ad_cap }} and Memory Capacity {{ mem_cap }}"
+  when: current_mode == "Error"
+
+- debug: msg="PMEM mode will be changed from {{ current_mode }} (AppDirect Capacity {{ ad_cap }} and Memory Capacity {{ mem_cap }}) to {{ pmem_mode }}"
+  when: debug_mode | bool

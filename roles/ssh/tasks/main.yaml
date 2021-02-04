@@ -1,0 +1,106 @@
+- name: Ensure ssh user and password
+  block:
+    - name: Input ansible_ssh_user
+      pause:
+        prompt: "Give your ansible_ssh_user"
+      register: prompt
+      when: ansible_ssh_user is undefined
+
+    - set_fact:
+        ansible_ssh_user: "{{ prompt.user_input }}"
+      when: ansible_ssh_user is undefined
+
+    - name: Input ansible_ssh_pass
+      pause:
+        prompt: "Give your ansible_ssh_pass"
+      register: prompt
+      when: ansible_ssh_pass is undefined
+
+    - set_fact:
+        ansible_ssh_pass: "{{ prompt.user_input }}"
+      when: ansible_ssh_pass is undefined
+  no_log: true
+  run_once: true
+
+- name: Confirm your ansible_ssh_user and ansible_ssh_pass
+  debug:
+    msg:
+      - "ansible_ssh_user: {{ ansible_ssh_user }}"
+      - "ansible_ssh_pass: {{ ansible_ssh_pass }}"
+  when: debug_mode | bool
+
+- name: install dependency
+  package:
+    name: sshpass
+    state: present
+  delegate_to: localhost
+  run_once: true 
+
+- name: check ssh directory in home
+  stat:
+    path: "{{ SSHDIR }}"
+  register: dir_state
+
+- debug:
+      msg: "{{ SSHDIR }} already existed"
+  when: dir_state.stat.exists == True
+
+- name: created ssh directory on remote home
+  file: path="{{ SSHDIR }}" state=directory
+  when: dir_state.stat.exists == False 
+
+- name: remove old ssh keypair on remote home
+  file: 
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - "{{ RSAFIL }}"
+    - "{{ RSAPUB }}"
+  
+- name: generate new ssh keypair
+  shell: ssh-keygen -t rsa -b 2048 -P "" -f {{ RSAFIL }}
+  register: result
+
+- name: new ssh keypair generating
+  debug:  
+    msg: "{{result.stdout_lines}}"
+  when: result.rc == 0 and debug_mode | bool
+
+- name: create set of all ssh keypairs
+  shell: cat {{ RSAPUB }}
+  register: result
+
+- name: print all public keypairs
+  debug:  
+    msg: "{{result.stdout_lines}}"
+  when: result.rc == 0 and debug_mode | bool
+
+- name: remove old public keypair set
+  file: 
+    path="{{ RSATMP }}"
+    state=absent
+  delegate_to: localhost
+  run_once: true
+ 
+- name: create file
+  file:
+    dest: "{{ RSATMP }}"
+    state: touch
+  delegate_to: localhost
+  run_once: true
+
+- name: save new public key set locally
+  shell: /bin/echo {{ result.stdout }} >> {{ RSATMP }}   
+  delegate_to: localhost
+
+- name: append all public keys to authorized_key file
+  authorized_key:
+    user="{{ auth_user }}"
+    key="{{ lookup('file', '{{ RSATMP }}') }}" 
+    state=present
+
+- name: add all servers' fingerprint
+  shell: |
+    ssh-keyscan -H
+    {{ ' '.join(groups['ssh_hosts']) }}
+    >> ~/.ssh/known_hosts

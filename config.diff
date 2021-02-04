@@ -1,0 +1,81 @@
+diff --git a/group_vars/all b/group_vars/all
+index 63dc3ca..4e4920b 100644
+--- a/group_vars/all
++++ b/group_vars/all
+@@ -8,6 +8,7 @@ glocaltemp: /tmp
+ 
+ # Install docker-ce if docker not exist
+ #enable_docker_repo: true
++enable_docker_repo: false
+ 
+ # Repository url to ipmctl tool
+ #ipmctl_repository: https://github.com/intel/ipmctl.git
+@@ -38,7 +39,9 @@ glocaltemp: /tmp
+ #ceph_repository: community
+ #ceph_stable_release: octopus
+ #ceph_network_ifg: eth0
++ceph_network_ifg: eno1
+ #ceph_block_device: /dev/vdb
++ceph_block_device: /dev/sdb
+ #ceph_subnet_mask: 10.0.10.0/24
+ 
+ # Customized ceph repository
+@@ -65,11 +68,15 @@ glocaltemp: /tmp
+ 
+ # Global variables setting for openstack deployment using kolla-ansible
+ #ops_external_ceph: false
++ops_external_ceph: true
+ #ops_local_registry: true
+ #ops_docker_registry: 10.67.125.23:4000
++ops_docker_registry: 10.67.125.21:4000
+ #ops_docker_namespace: aep-poc
+ #ops_kolla_internal_vip_address: 10.67.125.23
++ops_kolla_internal_vip_address: 10.67.125.123
+ #ops_network_interface: eth0
++ops_network_interface: eno1
+ #ops_network_external_interface: tap0
+ 
+ # Defined hosts from inventory/hosts
+@@ -122,10 +129,11 @@ glance_image_path: "/home/centos/workspace/centos7.qcow2"
+ 
+ #vm_pmem_prefix: "pmem-{{ vm_prefix }}"
+ #vm_pmem_enabled: false
++vm_pmem_enabled: true
+ #vm_pmem_flavor: m1.small.pmem_medium
+ 
+ # Device path in VMs as which attaching volume
+ #vm_attach_device: /dev/vdb
+ 
+ # Wait up to vm_start_timeout * vm_start_timeout seconds for VMs starting
+-vm_start_timeout: 10
++vm_start_timeout: 100
+diff --git a/inventory/hosts b/inventory/hosts
+index 7e6dfb7..8aef648 100644
+--- a/inventory/hosts
++++ b/inventory/hosts
+@@ -1,13 +1,20 @@
+ [all_hosts]
+-172.18.0.1
+-172.18.0.2
+-172.18.0.3
++10.67.125.36
++10.67.125.29
++10.67.125.155
++10.67.125.147
++10.67.125.143
++10.67.125.3
+ 
+ [controller_hosts]
+-172.18.0.1
++10.67.125.36
++10.67.125.29
++10.67.125.155
+ 
+ [compute_hosts]
+-172.18.0.2
++10.67.125.147
++10.67.125.143
++10.67.125.3
+ 
+ [deployment_host]
+ localhost

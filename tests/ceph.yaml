@@ -1,0 +1,11 @@
+- name: Set up the environment before ceph deployment
+  hosts: ceph_hosts
+  remote_user: "{{ ansible_ssh_user }}"
+  roles:
+    - ceph-common
+
+- name: Depoly ceph using ceph-ansible on controller
+  hosts: deployment_host
+  remote_user: "{{ ansible_ssh_user }}"
+  roles:
+    - ceph-ansible
