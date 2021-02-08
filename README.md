@@ -32,8 +32,8 @@
 - Clone opencloud_ansible repository:
 
 	`$ git clone https://gitlab.devtools.intel.com/essprc/opencloud2.0.git`
-- The end user could edit inventory/hosts to set hosts according to actual cluster usage
-+ The end user could edit group_vars/all for env setting, just an exmple as below:
+- The end user could edit **inventory/hosts** to set hosts according to actual cluster usage
++ The end user could edit **group_vars/all** for env setting, just an exmple as below:
     + glocalcache: /home/centos/intel/
 	+ glocaltemp: /tmp
 	+ ceph_network_ifg: eno1
