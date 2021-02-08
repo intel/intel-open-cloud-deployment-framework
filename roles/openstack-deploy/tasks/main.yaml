@@ -8,10 +8,10 @@
     # Configure kolla and kolla-ansible
     - include: configrepo.yaml
 
-    # Create virtual NIC if needed
   delegate_to: localhost
   run_once: true
 
+# Create virtual NIC if needed
 - include: vnic_create.yaml
   with_items: "{{ ops_networks }}"
 
