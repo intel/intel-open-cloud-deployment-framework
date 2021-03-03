@@ -1,4 +1,5 @@
 ## This is a project to deploy OpenStack, ceph and intel IA feature PMEM
+PMEM is an IA differentiate feature, all the support needed by the integration of pmem and openstack has been ready and ingetrated into this script, also the integration of OpenStack and Ceph. So after deployment with it, we can obtain a complete environment of OpenStack plus Ceph, with IA feature PMEM enabled in it.
 ### Environment setup before running the scripts
 
 
