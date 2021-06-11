@@ -1,0 +1,15 @@
+local_temp: "{{ glocaltemp }}"
+local_cache: "{{ glocalcache }}"
+debug_mode: true
+
+# Get k8s hosts from inventory/hosts
+kubespray_inventory_hosts: "{{ groups['kubernetes_hosts'] }}"
+
+# Repository url to download kubespray
+kubespray_ansible_repo: https://github.com/kubernetes-sigs/kubespray.git
+
+# Release version or branch of kubespray
+kubespray_ansible_version: release-2.14
+
+# Set k8s maser node quantity
+kuberspray_k8s_masters: 1

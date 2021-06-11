@@ -132,3 +132,13 @@ vm_start_timeout: 10
 
 # Disable Network Manager
 disable_network_manager: true
+
+# Repository url to download kubespray
+#kubespray_ansible_repo: https://github.com/kubernetes-sigs/kubespray.git
+
+# Release version or branch of kubespray
+#kubespray_ansible_version: release-2.14
+
+# Set k8s maser node quantity
+#kuberspray_k8s_masters: 1
+

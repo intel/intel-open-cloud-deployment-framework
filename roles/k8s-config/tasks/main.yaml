@@ -1,0 +1,6 @@
+---
+# Configure kubelet and restart kubelet service
+- include_tasks: kubelet.yaml
+
+# Check k8s nodes' config and k8s cluster's status
+- include_tasks: check.yaml

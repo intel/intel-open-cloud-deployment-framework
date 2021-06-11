@@ -1,0 +1,12 @@
+---
+- name: Deploy kubernetes using kubespray
+  hosts: deployment_host
+  remote_user: "{{ ansible_ssh_user }}"
+  roles:
+    - kubespray
+
+- name: Configure kubernetes worker nodes
+  hosts: kubernetes_worker_nodes
+  remote_user: "{{ ansible_ssh_user }}"
+  roles:
+    - k8s-config

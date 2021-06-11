@@ -1,0 +1,23 @@
+# Prerequisite packages
+pythonsrc: epel-release, python36
+pythonpkg: ruamel.yaml
+
+# Python path
+pythonbin: /usr/bin/python3
+pipbin: "{{ targetenv }}/bin/pip3"
+
+# Path to virtual env
+targetenv: "{{ local_cache }}/kubesprayenv"
+
+# Get enironment variables
+local_home: "{{ lookup('env','HOME') }}"
+local_user: "{{ lookup('env','USER') }}"
+
+kubespray_path: "{{ local_cache }}/kubespray"
+
+# Get k8s hosts from inventory hosts
+kubespray_hosts: "{{ ' '.join(kubespray_inventory_hosts) }}"
+
+# local downloaded source
+kubespray_repo_dir: "{{ kubespray_path }}"
+kubespray_repo_tar: "{{ role_path }}/files/source/kubespray-2.14.0.tar.gz"

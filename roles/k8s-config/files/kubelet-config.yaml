@@ -1,0 +1,9 @@
+cpuManagerPolicy: static
+kubeReserved:
+  cpu: 1000m
+  memory: 1024Mi
+  ephemeral-storage: 1024Mi
+systemReserved:
+  cpu: 1000m
+  memory: 1024Mi
+resolvConf: "/etc/resolv.conf"

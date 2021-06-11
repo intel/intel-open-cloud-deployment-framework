@@ -1,0 +1,11 @@
+---
+# Setup environment
+- include_tasks: env.yaml
+
+# Deploy kubernetes
+- include_tasks: deploy.yaml
+
+# Copy admin.conf to current user
+- include_tasks: auth.yaml
+
+- include_tasks: check.yaml
