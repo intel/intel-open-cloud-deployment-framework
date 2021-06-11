@@ -101,6 +101,6 @@
 
 - name: add all servers' fingerprint
   shell: |
-    ssh-keyscan -H
-    {{ ' '.join(groups['ssh_hosts']) }}
+    ssh-keyscan -H \
+    {{ ' '.join(groups['ssh_hosts']) }} \
     >> ~/.ssh/known_hosts
