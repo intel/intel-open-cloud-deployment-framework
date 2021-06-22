@@ -1,0 +1,13 @@
+---
+- name: Run memtier benchmark
+  block:
+    - name: Run memtier_benchmark.sh
+      script: memtier_benchmark.sh {{ memtier_pods }} {{ memtier_iter_no }}
+      environment:
+        LOCALTEMP: "{{ local_temp }}"
+      register: result
+
+    - debug: msg="{{ result.stdout_lines }}"
+      when: debug_mode | bool
+  delegate_to: "{{ k8s_master_ip }}"
+  run_once: true

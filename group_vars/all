@@ -19,6 +19,7 @@ enable_docker_repo: false
 # AppDirectNotInterleaved: AppDirect mode with all modules in an interleaved set
 # Other: Memory
 #pmem_mode: AppDirect
+pmem_mode: Memory
 
 # Absolute path to a json file for creating new PMEM namespaces
 # Default value is to roles/pmem-openstack/files/ns.json
@@ -142,3 +143,11 @@ disable_network_manager: true
 # Set k8s maser node quantity
 #kuberspray_k8s_masters: 1
 
+# Set redis pod quantity for memtier
+#memtier_redis_pods: 1 # This value should be align with memtier_pods
+
+# Set memtier pod quantity
+#memtier_pods: 1
+
+# Set memtier benchmark iteration number, only for tracking
+#memtier_iter_no: 1

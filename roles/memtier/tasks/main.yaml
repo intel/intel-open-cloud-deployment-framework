@@ -1,0 +1,21 @@
+---
+# Add memtier label on node
+- include_tasks: node_label_add.yaml
+
+# Create redis pods
+- include_tasks: redis_pods_create.yaml
+
+# Create memtier pods
+- include_tasks: memtier_pods_create.yaml
+
+# Run memtier benchmark
+- include_tasks: benchmark.yaml
+
+# Get total number of op/s
+- include_tasks: results_get.yaml
+
+# Delete memtier pods
+- include_tasks: memtier_pods_delete.yaml
+
+# Delete redis pods
+- include_tasks: redis_pods_delete.yaml

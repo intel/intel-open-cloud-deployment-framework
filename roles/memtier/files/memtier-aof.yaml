@@ -1,0 +1,31 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: memtier 
+spec:
+  selector:
+    matchLabels:
+      app: memtier  # has to match .spec.template.metadata.labels
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: memtier  # has to match .spec.selector.matchLabels
+    spec:
+      terminationGracePeriodSeconds: 10
+      containers:
+        - name: memtier
+          image: redislabs/memtier_benchmark:latest
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/sleep"]
+          args: ["36000"]
+          resources:
+            limits:
+              cpu: "1000m"
+              memory: "6Gi"
+            requests:
+              cpu: "600m"
+              memory: "6Gi"
+      nodeSelector:
+        benchmark: memtier

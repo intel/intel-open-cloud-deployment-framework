@@ -1,0 +1,22 @@
+---
+- name: Clean benchmark labels on all kube nodes
+  block:
+    - name: Run del_node_label.sh
+      script: del_node_label.sh {{ memtier_k8s_hosts }}
+      register: result
+
+    - debug: msg="{{ result.stdout_lines }}"
+      when: debug_mode | bool
+  delegate_to: "{{ k8s_master_ip }}"
+  run_once: true
+
+- name: Add memtier label on {{ memtier_hosts }}
+  block:
+    - name: Run add_node_label.sh
+      script: add_node_label.sh {{ memtier_hosts }}
+      register: result
+
+    - debug: msg="{{ result.stdout_lines }}"
+      when: debug_mode | bool
+  delegate_to: "{{ k8s_master_ip }}"
+  run_once: true

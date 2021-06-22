@@ -1,0 +1,9 @@
+local_temp: "{{ glocaltemp }}"
+local_cache: "{{ glocalcache }}"
+debug_mode: true
+
+memtier_inventory_hosts: "{{ groups['memtier_hosts'] }}"
+memtier_k8s_inventory_hosts: "{{ groups['kubernetes_hosts'] }}"
+memtier_redis_pods: 1
+memtier_pods: 1
+memtier_iter_no: 1

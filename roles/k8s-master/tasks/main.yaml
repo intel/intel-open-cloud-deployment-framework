@@ -1,0 +1,35 @@
+---
+- name: Get k8s master's IP and hostname
+  block:
+    ## Get kube-nodes from inventory/hosts from kubespray
+    - name: Include local variables of kubespray
+      include_vars:
+        file: "{{ k8s_master_kubespray_var }}"
+    
+    - name: Get local variables of kubespray inventory
+      include_vars:
+        file: "{{ kubespray_path }}/inventory/mycluster/hosts.yaml"
+        name: host_vars
+    
+    - name: Get all kube-nodes from kubespray inventroy file
+      set_fact:
+        kubenodes: "{{ host_vars.all.children['kube-node'].hosts.keys() | list }}"
+    
+    - name: Get one of kube-master's hostname from kubespray inventroy file
+      set_fact:
+        k8s_master_node: "{{ host_vars.all.children['kube-node'].hosts.keys()[0] }}"
+    
+    - debug: msg="{{ k8s_master_node }}"
+      when: debug_mode | bool
+    
+    - name: Get kube-master's IP from kubespray inventroy file
+      set_fact:
+        k8s_master_ip: "{{ item.value.ip }}"
+      when:
+        - item.key == k8s_master_node
+      with_dict: "{{ host_vars.all.hosts }}"
+    
+    - debug: msg="{{ k8s_master_ip }}"
+      when: debug_mode | bool
+  delegate_to: localhost
+  run_once: true
