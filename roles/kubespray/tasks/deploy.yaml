@@ -31,9 +31,10 @@
     chdir: "{{ kubespray_path }}"
 
 - name: Update Ansible inventory file with inventory builder
-  shell: 'CONFIG_FILE="{{ kubespray_path }}"/inventory/mycluster/hosts.yaml
+  shell: 'source {{ targetenv }}/bin/activate && 
+         CONFIG_FILE="{{ kubespray_path }}"/inventory/mycluster/hosts.yaml
          KUBE_MASTERS_MASTERS="{{ kuberspray_k8s_masters }}"
-         {{ pythonbin }} "{{ kubespray_path }}"/contrib/inventory_builder/inventory.py
+         python3 "{{ kubespray_path }}"/contrib/inventory_builder/inventory.py
          {{ kubespray_hosts }} '
   register: result
 
