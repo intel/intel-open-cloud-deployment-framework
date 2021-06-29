@@ -33,10 +33,17 @@ for svr in $servers
 do
   #echo $svr
   #echo "kubectl exec $svr -- memtier_benchmark -s redis-${redisno}.redis ${params}"
-#   kubectl exec $svr -- memtier_benchmark -s redis-${redisno}.redis ${params} > ${LOCALTEMP}/result-aof-${podno}-${ite}/result-aof-${redisno}.txt &
-  kubectl exec $svr -- memtier_benchmark -s redis-${redisno}.redis ${params} > ${LOCALTEMP}/result-aof-${podno}-${ite}/result-aof-${redisno}.txt
+  kubectl exec $svr -- memtier_benchmark -s redis-${redisno}.redis ${params} > ${LOCALTEMP}/result-aof-${podno}-${ite}/result-aof-${redisno}.txt &
   let redisno++
   if [[ ${redisno} == ${podno} ]]; then
     break;
   fi
+done
+
+sleep 5
+benchmark_process_num=`ps aux | grep "kubectl exec memtier" | grep -v "grep" | wc -l`
+while [ $benchmark_process_num -gt 0 ]
+do
+  sleep 5 
+  benchmark_process_num=`ps aux | grep "kubectl exec memtier" | grep -v "grep" | wc -l`
 done
