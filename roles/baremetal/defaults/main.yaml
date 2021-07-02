@@ -5,3 +5,5 @@ debug_mode: true
 http_proxy: ''
 https_proxy: ''
 no_proxy: ''
+
+disable_network_manager: false

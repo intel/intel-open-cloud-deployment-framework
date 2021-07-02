@@ -1,0 +1,48 @@
+---
+- name: Modify kubelet config file
+  block:
+    - name: Comment out all after the {{ k8scfg_rexpression }}
+      replace:
+        path: "{{ k8scfg_kubeletconf_dest }}"
+        after: "{{ k8scfg_rexpression }}"
+        regexp: "^(.+)$"
+        replace: '# \1'
+        backup: yes
+
+    - name: Comment out the {{ k8scfg_rexpression }} line
+      replace:
+        path: "{{ k8scfg_kubeletconf_dest }}"
+        regexp: "{{ k8scfg_rexpression }}"
+        replace: "# {{ k8scfg_rexpression }}"
+
+    - name: Add the content of files/kubelet-config.yaml to {{ k8scfg_kubeletconf_dest }}
+      blockinfile:
+        path: "{{ k8scfg_kubeletconf_dest }}"
+        block: "{{ k8scfg_kubeletconf_src }}"
+  become: true
+
+- name: Find all kube nodes (worker nodes) from kubespray
+  block:
+    - include_tasks: kube_get.yaml
+
+    # Separate all nodes with spaces
+    - set_fact:
+        kube_nodes: "{{ kubenodes | join(' ') }}"
+
+    - debug: msg="{{ kube_nodes }}"
+      when: debug_mode | bool
+  delegate_to: localhost # localhost is the deployment node
+  run_once: true
+
+- name: Drain nodes and restart kubelet services on these nodes
+  block:
+    - name: Run drain_node.sh
+      script: drain_node.sh {{ kube_nodes }}
+      environment:
+        LOCALTEMP: "{{ local_temp }}"
+      register: result
+
+    - debug: msg="{{ result.stdout_lines }}"
+      when: debug_mode | bool
+  delegate_to: "{{ k8s_master_ip }}"
+  run_once: true

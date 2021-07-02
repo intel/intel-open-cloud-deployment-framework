@@ -1,0 +1,9 @@
+---
+- name: Show pods in all namespace
+  command: kubectl get pods --all-namespaces
+  register: result
+  delegate_to: "{{ k8s_master_ip }}"
+  run_once: true
+
+- debug: msg="{{ result }}"
+  when: debug_mode | bool

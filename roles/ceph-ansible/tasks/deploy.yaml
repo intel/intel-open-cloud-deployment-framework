@@ -20,6 +20,13 @@
     - name: Use local ceph-ansible tarball
       command: tar xzf {{ ceph_ansible_tar }} -C {{ ceph_ansible_dir }} --strip-components 1
 
+- name: Upgrade pip>=19.1.1 to fix an issue when installing ceph-ansible
+  pip:
+   name:
+     - pip>=19.1.1
+   state: present
+   virtualenv: "{{ targetenv }}"
+
 - name: Install ansible and other needed python libraries
   pip:
    requirements: "{{ ceph_ansible_dir }}/requirements.txt"

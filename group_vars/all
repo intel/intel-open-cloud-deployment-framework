@@ -7,7 +7,7 @@ glocalcache: /home/centos/intel/
 glocaltemp: /tmp
 
 # Install docker-ce if docker not exist
-#enable_docker_repo: true
+enable_docker_repo: false
 
 # Repository url to ipmctl tool
 #ipmctl_repository: https://github.com/intel/ipmctl.git
@@ -37,8 +37,8 @@ glocaltemp: /tmp
 #ceph_origin: repository
 #ceph_repository: community
 #ceph_stable_release: octopus
-#ceph_network_ifg: eth0
-#ceph_block_device: /dev/vdb
+ceph_network_ifg: eno1
+ceph_block_device: /dev/sdb
 #ceph_subnet_mask: 10.0.10.0/24
 
 # Customized ceph repository
@@ -129,3 +129,16 @@ glance_image_path: "/home/centos/workspace/centos7.qcow2"
 
 # Wait up to vm_start_timeout * vm_start_timeout seconds for VMs starting
 vm_start_timeout: 10
+
+# Disable Network Manager
+disable_network_manager: true
+
+# Repository url to download kubespray
+#kubespray_ansible_repo: https://github.com/kubernetes-sigs/kubespray.git
+
+# Release version or branch of kubespray
+#kubespray_ansible_version: release-2.14
+
+# Set k8s maser node quantity
+#kuberspray_k8s_masters: 1
+

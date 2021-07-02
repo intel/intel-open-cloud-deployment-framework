@@ -1,0 +1,14 @@
+# AppDirect [default]: AppDirect mode with all modules in an interleaved set [Default]
+# AppDirectNotInterleaved: AppDirect mode with all modules in an interleaved set
+# Other: Memory
+# vars:
+#   ipmode: AppDirect
+#   ipmode: AppDirectNotInterleaved
+#   ipmode: Memory
+
+- name: Configures PMem module capacity in specified mode
+  hosts: pmem_hosts
+  remote_user: "{{ ansible_ssh_user }}" 
+  become: true
+  roles:
+    - pmem

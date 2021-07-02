@@ -1,0 +1,54 @@
+---
+- name: Get kubespray repository
+  block:
+    - name: Clone kubespray repository
+      git:
+        repo: "{{ kubespray_ansible_repo }}"
+        dest: "{{ kubespray_path }}"
+        version: "{{ kubespray_ansible_version }}"
+        force: yes # discard any modified files
+      register: clone_result
+      async: 120
+      poll: 10
+
+    - debug: msg="{{ clone_result }}"
+      when: debug_mode | bool
+  rescue:
+    - name: Create {{ kubespray_repo_dir }}
+      file:
+        path: "{{ kubespray_repo_dir }}"
+        state: "{{ item }}"
+      with_items:
+        - absent
+        - directory
+
+    - name: Use local kubespray tarball
+      command: tar xzf {{ kubespray_repo_tar }} -C {{ kubespray_repo_dir }} --strip-components 1
+
+- name: Copy ``inventory/sample`` as ``inventory/mycluster``
+  command: cp -rfp inventory/sample inventory/mycluster
+  args:
+    chdir: "{{ kubespray_path }}"
+
+- name: Update Ansible inventory file with inventory builder
+  shell: 'source {{ targetenv }}/bin/activate && 
+         CONFIG_FILE="{{ kubespray_path }}"/inventory/mycluster/hosts.yaml
+         KUBE_MASTERS_MASTERS="{{ kuberspray_k8s_masters }}"
+         python3 "{{ kubespray_path }}"/contrib/inventory_builder/inventory.py
+         {{ kubespray_hosts }} '
+  register: result
+
+- debug: msg="{{ result.stdout_lines }}"
+  when: debug_mode | bool
+
+- name: Review and change parameters under inventory/mycluster/hosts.yaml
+  debug: var=item
+  with_file:
+    - "{{ kubespray_path }}/inventory/mycluster/hosts.yaml"
+  when: debug_mode | bool
+
+- name: Deploy kubespray with ansible playbook
+  script: deploy.sh {{ kubespray_path }}
+  environment:
+    TARGETENV: "{{ targetenv }}"
+    LOCALTEMP: "{{ local_temp }}"

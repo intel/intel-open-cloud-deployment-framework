@@ -1,0 +1,5 @@
+k8scfg_rexpression: kubeReserved
+k8scfg_kubeletconf_dest: /etc/kubernetes/kubelet-config.yaml
+k8scfg_kubeletconf_src: "{{ lookup('file', 'kubelet-config.yaml') }}"
+
+k8scfg_kubespray_var: roles/kubespray/vars/main.yaml

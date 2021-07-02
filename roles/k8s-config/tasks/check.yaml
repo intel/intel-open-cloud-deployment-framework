@@ -1,0 +1,39 @@
+---
+## To make sure changes have been applied
+## start a proxy for Kubernetes api and check node config
+- name: Start a kubectl proxy and check node config
+  block:
+    - name: Copy kubeproxy.sh to remote
+      copy:
+        src: "{{ role_path }}/files/kubeproxy.sh"
+        dest: "{{ local_temp }}"
+
+    - name: Start a kubectl proxy for kubernetes api
+      command: /bin/bash kubeproxy.sh start
+      args:
+        chdir: "{{ local_temp }}"
+
+    - name: Get config from kubectl proxy running in backround
+      get_url:
+        url: "http://127.0.0.1:8001/api/v1/nodes/{{ item }}/proxy/configz"
+        dest: "{{ local_temp }}/{{ item }}_configz"
+      with_items: "{{ kubenodes }}"
+
+    # Print all nodes' proxy configz file
+    - debug: msg="{{ lookup('file', '{{ local_temp }}/{{ item }}_configz') }}"
+      with_items: "{{ kubenodes }}"
+      when: debug_mode | bool
+  delegate_to: "{{ k8s_master_ip }}"
+  run_once: true
+
+- name: Show kubectl nodes, pods and storage classes
+  block:
+    - name: Run kubectl_show.sh
+      script: kubectl_show.sh
+      register: result
+      run_once: true
+
+    - debug: msg="{{ result.stdout_lines }}"
+      run_once: true
+      when: debug_mode | bool
+  delegate_to: "{{ k8s_master_ip }}"
