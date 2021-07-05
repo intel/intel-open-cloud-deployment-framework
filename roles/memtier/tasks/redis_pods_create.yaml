@@ -1,0 +1,27 @@
+---
+- name: Copy {{ memtier_redis_yaml_file }} to remote
+  copy:
+    src: "{{ memtier_redis_yaml_file }}"
+    dest: "{{ memtier_redis_yaml_file_dest }}"
+  delegate_to: "{{ k8s_master_ip }}"
+  run_once: true
+
+- name: Modify amount of pods in {{ memtier_redis_yaml_file_dest }}
+  replace:
+    path: "{{ memtier_redis_yaml_file_dest }}"
+    regexp: "{{ memtier_redis_regexp }}"
+    replace: "replicas: {{ memtier_redis_pods }}"
+    backup: yes
+  delegate_to: "{{ k8s_master_ip }}"
+  run_once: true
+
+- name: Create redis pods
+  block:
+    - name: Run kubectl create -f {{ memtier_redis_yaml_file_dest }}
+      command: kubectl create -f {{ memtier_redis_yaml_file_dest }}
+      register: result
+
+    - debug: msg="{{ result.stdout_lines }}"
+      when: debug_mode | bool
+  delegate_to: "{{ k8s_master_ip }}"
+  run_once: true

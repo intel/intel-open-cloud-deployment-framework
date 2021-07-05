@@ -1,0 +1,10 @@
+pythonbin: /usr/bin/python3
+
+memtier_redis_yaml_file: "{{ role_path }}/files/redis-aof-statefulset.yaml"
+memtier_redis_yaml_file_dest: "{{ local_temp }}/redis-aof-statefulset.yaml"
+memtier_yaml_file: "{{ role_path }}/files/memtier-aof.yaml"
+memtier_yaml_file_dest: "{{ local_temp }}/memtier-aof.yaml"
+memtier_hosts: "{{ ' '.join(memtier_inventory_hosts) }}"
+memtier_k8s_hosts: "{{ ' '.join(memtier_k8s_inventory_hosts) }}"
+memtier_redis_regexp: "replicas: 1"
+memtier_regexp: "replicas: 1"

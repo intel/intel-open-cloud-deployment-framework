@@ -39,3 +39,6 @@ controller_hosts
 
 [kubernetes_worker_nodes:children]
 kubernetes_hosts
+
+[memtier_hosts]
+10.67.125.8

@@ -1,0 +1,7 @@
+---
+- name: Memtier benchmark
+  hosts: memtier_hosts ## TODO: need to use one of k8s master nodes if we can specify master nodes in the future
+  remote_user: "{{ ansible_ssh_user }}"
+  roles:
+    - k8s-master
+    - memtier
