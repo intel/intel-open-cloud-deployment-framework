@@ -41,6 +41,16 @@
 - debug: msg="{{ result.stdout_lines }}"
   when: debug_mode | bool
 
+- name: Update Ansible inventory file with specific master nodes and worker nodes
+  shell: 'source {{ targetenv }}/bin/activate && 
+         CONFIG_FILE="{{ kubespray_path }}"/inventory/mycluster/hosts.yaml
+         python3 "{{ role_path }}"/files/set_master_and_worker.py 
+         {{ kubespray_master_hosts }} {{ kubespray_worker_hosts }}'
+  register: result
+
+- debug: msg="{{ result.stdout_lines }}"
+  when: debug_mode | bool
+
 - name: Review and change parameters under inventory/mycluster/hosts.yaml
   debug: var=item
   with_file:

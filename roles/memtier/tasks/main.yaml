@@ -1,4 +1,6 @@
 ---
+- include_tasks: env.yaml
+
 # Add memtier label on node
 - include_tasks: node_label_add.yaml
 

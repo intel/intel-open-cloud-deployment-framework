@@ -18,6 +18,9 @@ kubespray_path: "{{ local_cache }}/kubespray"
 # Get k8s hosts from inventory hosts
 kubespray_hosts: "{{ ' '.join(kubespray_inventory_hosts) }}"
 
+kubespray_master_hosts: "{{ ','.join(kubespray_inventory_master_hosts) }}"
+kubespray_worker_hosts: "{{ ','.join(kubespray_inventory_worker_hosts) }}"
+
 # local downloaded source
 kubespray_repo_dir: "{{ kubespray_path }}"
 kubespray_repo_tar: "{{ role_path }}/files/source/kubespray-2.14.0.tar.gz"

@@ -27,13 +27,13 @@ params="-p 6379 --threads 8 --clients 1 --test-time 60 --ratio 1:10 --data-size 
 #params="-p 6379 --threads 8 --clients 1 --test-time 300 --ratio 1:10 --data-size 1024 --key-pattern S:S --random-data"
 servers=`kubectl get pods | grep memtier | awk '{print $1}'`
 echo $servers
-mkdir -p ${LOCALTEMP}/result-aof-${podno}-${ite}
+mkdir -p ${LOCALTEMP}/result-${podno}-${ite}
 let redisno=0
 for svr in $servers
 do
   #echo $svr
   #echo "kubectl exec $svr -- memtier_benchmark -s redis-${redisno}.redis ${params}"
-  kubectl exec $svr -- memtier_benchmark -s redis-${redisno}.redis ${params} > ${LOCALTEMP}/result-aof-${podno}-${ite}/result-aof-${redisno}.txt &
+  kubectl exec $svr -- memtier_benchmark -s redis-${redisno}.redis ${params} > ${LOCALTEMP}/result-${podno}-${ite}/result-${redisno}.txt &
   let redisno++
   if [[ ${redisno} == ${podno} ]]; then
     break;

@@ -6,7 +6,7 @@
     - kubespray
 
 - name: Configure kubernetes worker nodes
-  hosts: kubernetes_worker_nodes
+  hosts: kubernetes_worker_hosts
   remote_user: "{{ ansible_ssh_user }}"
   roles:
     - k8s-config

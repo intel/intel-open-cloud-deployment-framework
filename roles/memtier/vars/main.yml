@@ -1,9 +1,12 @@
+pythonsrc: epel-release, python36
 pythonbin: /usr/bin/python3
 
-memtier_redis_yaml_file: "{{ role_path }}/files/redis-aof-statefulset.yaml"
-memtier_redis_yaml_file_dest: "{{ local_temp }}/redis-aof-statefulset.yaml"
-memtier_yaml_file: "{{ role_path }}/files/memtier-aof.yaml"
-memtier_yaml_file_dest: "{{ local_temp }}/memtier-aof.yaml"
+memtier_redis_yaml_file: "{{ role_path }}/files/redis-statefulset.yaml"
+memtier_redis_yaml_file_dest: "{{ local_temp }}/redis-statefulset.yaml"
+memtier_yaml_file: "{{ role_path }}/files/memtier.yaml"
+memtier_yaml_file_dest: "{{ local_temp }}/memtier.yaml"
+memtier_getops_file: "{{ role_path }}/files/getops.py"
+memtier_getops_file_dest: "{{ local_temp }}/getops.py"
 memtier_hosts: "{{ ' '.join(memtier_inventory_hosts) }}"
 memtier_k8s_hosts: "{{ ' '.join(memtier_k8s_inventory_hosts) }}"
 memtier_redis_regexp: "replicas: 1"
