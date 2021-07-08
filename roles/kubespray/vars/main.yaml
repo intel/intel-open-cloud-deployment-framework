@@ -1,6 +1,6 @@
 # Prerequisite packages
 pythonsrc: epel-release, python36
-pythonpkg: ruamel.yaml
+pythonpkg: ruamel.yaml, pyyaml
 
 # Python path
 pythonbin: /usr/bin/python3
