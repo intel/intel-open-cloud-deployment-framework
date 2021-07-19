@@ -9,6 +9,8 @@ ceph_stable_release: octopus
 ceph_network_ifg: eth0
 ceph_block_device: /dev/vdb
 ceph_subnet_mask: 10.0.10.0/24
+ceph_public_subnet: 10.0.10.0/24
+ceph_cluster_subnet: 10.0.10.0/24
 
 # Get hosts from inventory/hosts
 ceph_inventory_hosts: "{{ groups['ceph_hosts'] }}"

@@ -1,7 +1,7 @@
 # Ensure that all files and directory listed below can be accessed
 
 # Global cache directory for preparing all components and sources
-glocalcache: /home/centos/intel/
+glocalcache: /home/centos/intel
 
 # Global cache directory for saving temporary files
 glocaltemp: /tmp
@@ -40,7 +40,8 @@ pmem_mode: Memory
 #ceph_stable_release: octopus
 ceph_network_ifg: eno1
 ceph_block_device: /dev/sdb
-#ceph_subnet_mask: 10.0.10.0/24
+ceph_cluster_subnet: 10.67.124.0/23
+ceph_public_subnet: 10.67.124.0/23
 
 # Customized ceph repository
 # Config 'ceph_repository: custom' before enabling them
@@ -65,13 +66,15 @@ ceph_block_device: /dev/sdb
 #kolla_version: "{{ kolla_ansible_version }}"
 
 # Global variables setting for openstack deployment using kolla-ansible
-#ops_external_ceph: false
-#ops_local_registry: true
-#ops_docker_registry: 10.67.125.23:4000
+ops_external_ceph: true
+ops_local_registry: true
+ops_docker_registry: 10.67.125.31:4000
 #ops_docker_namespace: aep-poc
-#ops_kolla_internal_vip_address: 10.67.125.23
-#ops_network_interface: eth0
-#ops_network_external_interface: tap0
+ops_kolla_internal_vip_address: 10.67.125.94
+ops_network_interface: eno1
+ops_network_external_interface: tap0
+ops_keepalived_virtual_router_id: "176"
+ops_storage_interface: eno1
 
 # Defined hosts from inventory/hosts
 #ops_controls: "{{ groups['controller_hosts'] }}"

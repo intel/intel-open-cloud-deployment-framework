@@ -36,7 +36,7 @@ ceph_site_conf: "{{ ceph_ansible_dest }}/site.yml"
 
 # hosts samples
 ceph_hosts_ini: hosts.ini
-ceph_hosts_sample: "{{ local_temp }}/hosts.yaml"
+ceph_hosts_sample: "{{ role_path }}/files/hosts.ini"
 ceph_hosts_conf: "{{ ceph_ansible_dest }}/hosts.yml"
 
 # logging file

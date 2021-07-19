@@ -1,20 +1,47 @@
-- name: Generate inventory hosts
-  shell: 'CONFIG_FILE="{{ ceph_hosts_ini }}" CONFIGED_FILE="{{ ceph_hosts_sample }}"
-          {{ pythonbin }} inventory.py {{ ceph_hosts }}'
-  args:
-    chdir: "{{ role_path }}/files"
-  register: result
+- name: Copy .yml.sample to .yml
+  copy:
+    src:  "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: u=rw,g=wr,o=wr
+  become: true
+  with_items:
+    - { src: "{{ ceph_all_sample }}", dest: "{{ ceph_all_conf }}" }
+    - { src: "{{ ceph_site_sample }}", dest: "{{ ceph_site_conf }}" }
+    - { src: "{{ ceph_hosts_sample }}", dest: "{{ ceph_hosts_conf }}" }
 
-- debug: msg="{{ result.stdout_lines }}"
-  when: debug_mode | bool
+- block:
+    - set_fact:
+        temp: "{{ ceph_ansible_dest }}/group_vars/all.yml.sample"
+        gyml: "{{ ceph_ansible_dest }}/group_vars/all.yml"
 
-- set_fact:
-    ceph_subnet_mask: "{{ (result.stdout | regex_search('subnet_mask.*')).split()[1] }}" 
+    - name: Generate new all varibales
+      template:
+        src: all.j2
+        dest: "{{ local_temp }}/all.yaml"
 
-- debug: msg="{{ ceph_subnet_mask }}"
-  when: debug_mode | bool
+    - name: Append global variables to all.yml
+      blockinfile:
+        path:  "{{ gyml }}"
+        block: "{{ lookup('file', '{{ ceph_app_file }}') }}"
 
-- name: Generate additional contents in all.yaml
-  template:
-    src: "{{ ceph_app_sample }}"
-    dest: "{{ ceph_app_file }}"
+    - name: Remove temporary file
+      file:
+        path: "{{ local_temp }}/all.yaml"
+        state: absent
+  become: true
+
+- block:
+    - set_fact:
+        hosts: "{{ ceph_hosts_conf }}"
+
+    - set_fact:
+        objconfs:
+          - { ini: '{{ hosts }}', section: mons,    options: '{{ ceph_inventory_hosts }}' }
+          - { ini: '{{ hosts }}', section: osds,    options: '{{ ceph_inventory_hosts }}' }
+          - { ini: '{{ hosts }}', section: mgrs,    options: '{{ ceph_inventory_hosts }}' }
+          - { ini: '{{ hosts }}', section: rgws,    options: '{{ ceph_inventory_hosts }}' }
+
+    - include: configini.yaml objconf={{ outside_item }}
+      with_items: "{{ objconfs }}"
+      loop_control:
+        loop_var: outside_item

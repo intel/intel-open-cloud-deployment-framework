@@ -5,4 +5,4 @@
 - include: auth.yaml
 
 # add secret key to libvrit
-- include: secret.yaml
+#- include: secret.yaml
