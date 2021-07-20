@@ -1,3 +1,5 @@
+- include: env.yaml
+
 # create pools
 - include: pools.yaml
 

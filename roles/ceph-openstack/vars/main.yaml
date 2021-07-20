@@ -3,6 +3,7 @@
 keyringdest: /etc/kolla/config
 cephconfig: /etc/ceph
 kollaconfig: /etc/kolla/config
+ceph_ops_kolla_conf_path: /etc/kolla
 
 # backend configuration files
 backend_conf: "backend"
