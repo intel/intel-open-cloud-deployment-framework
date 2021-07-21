@@ -20,3 +20,7 @@ ceph_custom_key: {{ ceph_custom_key }}
 ceph_custom_repo: {{ ceph_custom_repo}}
 {% endif %}
 configure_firewall: False
+
+ceph_conf_overrides:
+  global:
+    osd pool default size: {{ ceph_osd_pool_default_size }}

@@ -12,3 +12,5 @@ backend_path: "{{ role_path }}/files/backend"
 # temporary files
 secret_temp: "{{ local_temp }}/secret.xml"
 uuid_backup: "{{ local_temp }}/uuid.bak"
+
+ceph_ops_ceph_host: "{{ ceph_ops_ceph_hosts[0] }}"

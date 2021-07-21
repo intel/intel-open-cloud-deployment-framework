@@ -8,6 +8,7 @@
     - { user: glance }
     - { user: cinder-backup }
     - { user: cinder }
+  delegate_to: "{{ ceph_ops_ceph_host }}"
 
 - name: Create a new user for cinder-backup and glance
   command: >
@@ -16,6 +17,7 @@
   with_items:
     - { user: glance, pool: images }
     - { user: cinder-backup, pool: backups }
+  delegate_to: "{{ ceph_ops_ceph_host }}"
 
 - name: Create a new user for nova/cinder
   command: >
@@ -25,6 +27,7 @@
     rbd pool={{ item.pool1 }}, profile rbd pool={{ item.pool2 }}'
   with_items:
     - { user: cinder, pool1: volumes, pool2: vms, pool3: images}
+  delegate_to: "{{ ceph_ops_ceph_host }}"
 
 - name: Add the keyrings to the appropriate files
   include_tasks: keyring_add.yaml

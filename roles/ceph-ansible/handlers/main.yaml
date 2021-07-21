@@ -2,6 +2,7 @@
   command: ceph status
   register: result
   become: true
+  delegate_to: "{{ ceph_host }}"
     
 - debug: msg="{{ result.stdout_lines }}"  
   when: debug_mode | bool
@@ -10,6 +11,7 @@
   command: ceph osd pool ls
   register: result
   become: true
+  delegate_to: "{{ ceph_host }}"
 
 - debug: msg={{ result.stdout_lines }}
   when: debug_mode | bool

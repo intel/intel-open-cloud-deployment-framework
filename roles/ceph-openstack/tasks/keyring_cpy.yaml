@@ -23,14 +23,28 @@
         path: "{{ kollaconfig }}/{{ item.dest }}"
         state: directory
 
-    - name: Copy ceph.conf to {{ kollaconfig }}/{{ item.dest }}
-      copy:
+    - name: Copy remote ceph.conf to local {{ local_temp }}/ceph.conf
+      fetch:
         src: "{{ cephconfig }}/ceph.conf"
+        dest: "{{ local_temp }}/ceph.conf"
+        flat: yes
+      delegate_to: "{{ ceph_ops_ceph_host }}"
+
+    - name: Copy local ceph.conf to local {{ kollaconfig }}/{{ item.dest }}
+      copy:
+        src: "{{ local_temp }}/ceph.conf"
         dest: "{{ kollaconfig }}/{{ item.dest }}/ceph.conf"
 
-    - name: Copy keyring to {{ kollaconfig }}/{{ item.dest }}
+    - name: Copy remote keyring to local {{ local_temp }} keyring
+      fetch:
+        src: "{{ cephconfig }}/ceph.client.{{ item.name }}.keyring"
+        dest: "{{ local_temp }}/ceph.client.{{ item.rename }}.keyring"
+        flat: yes
+      delegate_to: "{{ ceph_ops_ceph_host }}"
+
+    - name: Copy local keyring to {{ kollaconfig }}/{{ item.dest }}
       copy:
-        src:  "{{ cephconfig }}/ceph.client.{{ item.name }}.keyring"
+        src:  "{{ local_temp }}/ceph.client.{{ item.rename }}.keyring"
         dest: "{{ kollaconfig }}/{{ item.dest }}/ceph.client.{{ item.rename }}.keyring"
 # with_items:
 #   - { name: glance,        rename: glance,        dest: glance }

@@ -48,6 +48,9 @@ ceph_public_subnet: 10.67.124.0/23
 #ceph_custom_key: http://10.67.125.13/ceph/x86_64/repodata/repomd.xml.asc
 #ceph_custom_repo: http://10.67.125.13/ceph/x86_64/
 
+# Set ceph osd pool default size
+#ceph_osd_pool_default_size: 3
+
 # Proxy setting if needed
 #http_proxy: ''
 #https_proxy: ''

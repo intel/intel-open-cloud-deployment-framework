@@ -12,5 +12,6 @@
       copy:
         content: "{{ cmd_output.stdout }}"
         dest: "{{ cephconfig }}/client.{{ item }}.key"
+  delegate_to: "{{ ceph_ops_ceph_host }}"
 # with_items:
 #   - cinder

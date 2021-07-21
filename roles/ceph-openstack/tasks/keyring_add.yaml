@@ -15,6 +15,7 @@
         dest: "{{ cephconfig }}/ceph.client.{{ item }}.keyring"
         # Add a line or '\n' is OK
         line: ''
+  delegate_to: "{{ ceph_ops_ceph_host }}"
 # # resused or included from externel task  
 # with_items:
 #   - glance

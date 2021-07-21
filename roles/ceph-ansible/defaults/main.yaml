@@ -17,8 +17,11 @@ ceph_inventory_hosts: "{{ groups['ceph_hosts'] }}"
 
 # Repository url to download ceph_ansible
 ceph_ansible_repository: https://github.com/ceph/ceph-ansible.git
-ceph_ansible_version: stable-5.0
+# The branch stable-5.0 will be updated. It might lead to new bugs if use the latest codes of this branch.
+ceph_ansible_version: v5.0.7 # use specific version. 
 
 # Customized ceph repository when config ceph_repository: custom
 ceph_custom_key: http://10.67.125.13/ceph/x86_64/repodata/repomd.xml.asc
 ceph_custom_repo: http://10.67.125.13/ceph/x86_64/
+
+ceph_osd_pool_default_size: 3

@@ -3,6 +3,8 @@
   register: result
   listen: "Show ceph status"
   become: true  
+  delegate_to: "{{ ceph_ops_ceph_host }}"
+
   
 - debug: msg= "{{ result }}"  
   listen: "Show ceph status"
@@ -13,6 +15,7 @@
   register: result
   listen: "List created pools"
   become: true
+  delegate_to: "{{ ceph_ops_ceph_host }}"
 
 - debug: msg={{ result.stdout_lines }}
   listen: "List created pools"
