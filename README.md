@@ -38,7 +38,9 @@ PMEM is an IA differentiate feature, all the support needed by the integration o
     + glocalcache: /home/centos/intel/
 	+ glocaltemp: /tmp
 	+ ceph_network_ifg: eno1
-	+ ceph_block_device: /dev/sdb
+	+ ceph_block_devices:
+    +  `- /dev/sdb`
+    +  `- /dev/sdc`
 	+ ops_external_ceph: true
 	+ ops_docker_registry: 10.67.125.21:4000
 	+ ops_kolla_internal_vip_address: 10.67.125.123

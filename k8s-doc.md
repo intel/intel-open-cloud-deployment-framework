@@ -96,7 +96,9 @@
         enable_docker_repo: false
         pmem_mode: Memory  ## Here we use Pmem Memory mode
         ceph_network_ifg: ens260f0  ## Make sure the network interfaces of all nodes are the same.
-        ceph_block_device: /dev/nvme1n1  ## Make sure /dev/xxx of all nodes are the same.
+        ceph_block_devices:
+          - /dev/nvme1n1  ## Make sure there're /dev/nvme1n1 on all nodes.
+          - /dev/nvme2n1  ## Make sure there're /dev/nvme2n1 on all nodes.
         vm_start_timeout: 10
         disable_network_manager: true ## Need to disable network manager for Kubernetes deployment.
 

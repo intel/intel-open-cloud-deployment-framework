@@ -39,7 +39,10 @@ pmem_mode: Memory
 #ceph_repository: community
 #ceph_stable_release: octopus
 ceph_network_ifg: eno1
-ceph_block_device: /dev/sdb
+ceph_block_devices:
+  - /dev/sdb
+  - /dev/sdc
+  - /dev/sdd
 ceph_cluster_subnet: 10.67.124.0/23
 ceph_public_subnet: 10.67.124.0/23
 

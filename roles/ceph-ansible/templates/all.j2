@@ -7,7 +7,10 @@ public_network: {{ ceph_public_subnet }}
 cluster_network: {{ ceph_cluster_subnet }}
 monitor_interface: {{ ceph_network_ifg }}
 devices:
-  - '{{ ceph_block_device }}'
+{% for device in ceph_block_devices %}
+  - {{ device }} 
+{% endfor %}
+
 osd_scenario: collocated
 # ceph-ansible is not integrated with the new orchestrator APIs,
 # introduced in Nautlius and Octopus, which means that newer management

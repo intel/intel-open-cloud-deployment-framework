@@ -7,7 +7,9 @@ ceph_origin: repository
 ceph_repository: community
 ceph_stable_release: octopus
 ceph_network_ifg: eth0
-ceph_block_device: /dev/vdb
+ceph_block_devices:
+  - /dev/vdb
+  - /dev/vdc
 ceph_subnet_mask: 10.0.10.0/24
 ceph_public_subnet: 10.0.10.0/24
 ceph_cluster_subnet: 10.0.10.0/24
