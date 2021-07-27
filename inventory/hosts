@@ -22,6 +22,7 @@ all_hosts
 all_hosts
 
 [ceph_hosts]
+10.67.125.12
 10.67.125.8
 
 [ceph_openstack:children]

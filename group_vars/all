@@ -39,10 +39,45 @@ pmem_mode: Memory
 #ceph_repository: community
 #ceph_stable_release: octopus
 ceph_network_ifg: eno1
-ceph_block_devices:
-  - /dev/sdb
-  - /dev/sdc
-  - /dev/sdd
+#ceph_block_devices:
+#  - /dev/sdb
+#  - /dev/sdc
+#  - /dev/sdd
+
+# Logical volume size
+#lvm_lv_size: 100G
+
+# Set logical volume quantity for each device, such as device /dev/sdb
+#lvm_lvs_per_dev: 4 ## needs to >=1
+
+# Set it to true if you want to use logical volumes
+#ceph_use_lvm: false
+#ceph_lvm_volumes:
+#  - data: datalv1
+#    data_vg: sdbvg
+#  - data: datalv2
+#    data_vg: sdbvg
+#  - data: datalv3
+#    data_vg: sdbvg
+#  - data: datalv4
+#    data_vg: sdbvg
+#  - data: datalv1
+#    data_vg: sdcvg
+#  - data: datalv2
+#    data_vg: sdcvg
+#  - data: datalv3
+#    data_vg: sdcvg
+#  - data: datalv4
+#    data_vg: sdcvg
+#  - data: datalv1
+#    data_vg: sddvg
+#  - data: datalv2
+#    data_vg: sddvg
+#  - data: datalv3
+#    data_vg: sddvg
+#  - data: datalv4
+#    data_vg: sddvg
+
 ceph_cluster_subnet: 10.67.124.0/23
 ceph_public_subnet: 10.67.124.0/23
 
