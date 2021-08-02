@@ -12,5 +12,4 @@
 
     - debug: msg="{{ result.stdout_lines }}"
       when: debug_mode | bool
-  delegate_to: "{{ k8s_master_ip }}"
   run_once: true

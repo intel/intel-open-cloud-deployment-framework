@@ -7,7 +7,6 @@
 
     - debug: msg="{{ result.stdout_lines }}"
       when: debug_mode | bool
-  delegate_to: "{{ k8s_master_ip }}"
   run_once: true
 
 - name: Add memtier label on {{ memtier_hosts }}
@@ -18,5 +17,4 @@
 
     - debug: msg="{{ result.stdout_lines }}"
       when: debug_mode | bool
-  delegate_to: "{{ k8s_master_ip }}"
   run_once: true

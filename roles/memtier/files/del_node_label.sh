@@ -7,7 +7,6 @@ if [ $# -lt 1 ]; then
 fi
 
 for node_ip in "$@"; do
-    # get hostname from /etc/hosts
-    node=`grep -r ${node_ip} /etc/hosts | awk '{ print $3 }'`
+    node=`kubectl get nodes -o wide | grep ${node_ip} | awk '{print $1}'`
     kubectl label node $node benchmark-
 done

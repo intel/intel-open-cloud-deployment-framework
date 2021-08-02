@@ -2,7 +2,7 @@
 - name: Show pods in all namespace
   command: kubectl get pods --all-namespaces
   register: result
-  delegate_to: "{{ k8s_master_ip }}"
+  delegate_to: "{{ kubespray_inventory_master_hosts[0] }}"
   run_once: true
 
 - debug: msg="{{ result }}"

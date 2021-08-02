@@ -12,5 +12,4 @@
       file:
         path="{{ memtier_redis_yaml_file_dest }}"
         state=absent
-  delegate_to: "{{ k8s_master_ip }}"
   run_once: true
