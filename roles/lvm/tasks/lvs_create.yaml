@@ -1,0 +1,14 @@
+---
+- name: Copy lvs.sh to remote
+  copy: 
+    src: "{{ role_path }}/files/lvs.sh"
+    dest: "{{ local_temp }}"
+
+- name: Create logical volumes 
+  script: lvs.sh {{ item }}
+  with_items: "{{ ceph_block_devices }}"
+  environment:
+    LV_SIZE: "{{ lvm_lv_size }}"
+    LVS_NUM: "{{ lvm_lvs_per_dev }}"
+  args:
+    chdir: "{{ local_temp }}"

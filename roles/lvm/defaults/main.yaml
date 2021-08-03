@@ -1,0 +1,6 @@
+local_temp: "{{ glocaltemp }}"
+local_cache: "{{ glocalcache }}"
+debug_mode: true
+
+lvm_lv_size: 100G
+lvm_lvs_per_dev: 4

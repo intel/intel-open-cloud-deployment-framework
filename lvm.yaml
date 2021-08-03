@@ -1,0 +1,5 @@
+- name: Create logical volumes on ceph hosts
+  hosts: ceph_hosts
+  remote_user: "{{ ansible_ssh_user }}"
+  roles:
+     - lvm

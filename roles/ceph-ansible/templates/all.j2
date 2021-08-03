@@ -6,8 +6,20 @@ ceph_stable_release: {{ ceph_stable_release }}
 public_network: {{ ceph_public_subnet }}
 cluster_network: {{ ceph_cluster_subnet }}
 monitor_interface: {{ ceph_network_ifg }}
+
+{% if ceph_use_lvm == false %}
 devices:
-  - '{{ ceph_block_device }}'
+{% for device in ceph_block_devices %}
+  - {{ device }} 
+{% endfor %}
+{% else %}
+lvm_volumes:
+{% for lvm in ceph_lvm_volumes %}
+  - data: {{ lvm.data }}
+    data_vg: {{ lvm.data_vg }}
+{% endfor %}
+{% endif %}
+
 osd_scenario: collocated
 # ceph-ansible is not integrated with the new orchestrator APIs,
 # introduced in Nautlius and Octopus, which means that newer management
