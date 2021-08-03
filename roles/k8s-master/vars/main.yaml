@@ -1,1 +1,0 @@
-k8s_master_kubespray_var: roles/kubespray/vars/main.yaml
