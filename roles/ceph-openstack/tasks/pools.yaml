@@ -11,6 +11,7 @@
         - { name: vms, size: 16 }
         # Create backups pool for cinder
         - { name: backups, size: 16 }
+      delegate_to: "{{ ceph_ops_ceph_host }}"
       notify: "List created pools"
 
 - name: Initialize new pool {{ item }}
@@ -20,4 +21,5 @@
     - images
     - vms
     - backups
+  delegate_to: "{{ ceph_ops_ceph_host }}"
   notify: "List created pools"

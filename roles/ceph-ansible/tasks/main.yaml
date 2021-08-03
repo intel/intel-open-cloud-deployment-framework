@@ -3,6 +3,7 @@
   shell: command -v "{{ ceph_bin }}"
   register: ceph_exist
   ignore_errors: yes
+  delegate_to: "{{ ceph_host }}"
 
 - block:
     - name: Skip the deployment of ceph

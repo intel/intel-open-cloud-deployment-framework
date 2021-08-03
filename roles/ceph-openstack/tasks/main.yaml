@@ -1,3 +1,5 @@
+- include: env.yaml
+
 # create pools
 - include: pools.yaml
 
@@ -5,4 +7,4 @@
 - include: auth.yaml
 
 # add secret key to libvrit
-- include: secret.yaml
+#- include: secret.yaml

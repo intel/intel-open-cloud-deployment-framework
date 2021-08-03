@@ -39,6 +39,8 @@ docker_registry: "{{ ops_docker_registry }}"
 docker_namespace: "{{ ops_docker_namespace }}"
 kolla_internal_vip_address: "{{ ops_kolla_internal_vip_address }}"
 network_interface: "{{ ops_network_interface }}"
+storage_interface: "{{ ops_storage_interface }}"
 network_external_interface: "{{ ops_network_external_interface }}"
+keepalived_virtual_router_id: "{{ ops_keepalived_virtual_router_id }}"
 
 virtual_nic_enabled: "{{ ops_virtual_nic_enabled }}"

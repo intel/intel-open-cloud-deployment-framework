@@ -47,20 +47,6 @@
     - name: Abort playbook if checking failed on f{{ ceph_hosts_sample }}
       fail: msg="The check on "{{ ceph_hosts_sample }}" did not pass, please verify that"
 
-- name: Copy .yml.sample to .yml
-  copy:
-    src:  "{{ item.src }}"
-    dest: "{{ item.dest }}"
-  with_items:
-    - { src: "{{ ceph_all_sample }}", dest: "{{ ceph_all_conf }}" }
-    - { src: "{{ ceph_site_sample }}", dest: "{{ ceph_site_conf }}" }
-    - { src: "{{ ceph_hosts_sample }}", dest: "{{ ceph_hosts_conf }}" }
-
-- name: Insert custom group vars to group_vars/all.yml
-  blockinfile:
-    path:  "{{ ceph_all_conf }}"
-    block: "{{ ceph_app_vars }}"
-
 - name: Perform the deployment for ceph cluster
   shell: |
     source "{{ targetenv }}/bin/activate"

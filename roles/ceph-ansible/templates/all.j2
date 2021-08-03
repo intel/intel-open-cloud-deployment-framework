@@ -3,8 +3,8 @@ cluster: ceph
 ceph_origin: {{ ceph_origin }}
 ceph_repository: {{ ceph_repository }}
 ceph_stable_release: {{ ceph_stable_release }}
-public_network: "{{ ceph_subnet_mask }}"
-cluster_network: "{{ ceph_subnet_mask }}"
+public_network: {{ ceph_public_subnet }}
+cluster_network: {{ ceph_cluster_subnet }}
 monitor_interface: {{ ceph_network_ifg }}
 devices:
   - '{{ ceph_block_device }}'
@@ -20,3 +20,7 @@ ceph_custom_key: {{ ceph_custom_key }}
 ceph_custom_repo: {{ ceph_custom_repo}}
 {% endif %}
 configure_firewall: False
+
+ceph_conf_overrides:
+  global:
+    osd pool default size: {{ ceph_osd_pool_default_size }}

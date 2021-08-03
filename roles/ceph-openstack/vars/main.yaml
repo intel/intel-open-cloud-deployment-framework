@@ -3,6 +3,7 @@
 keyringdest: /etc/kolla/config
 cephconfig: /etc/ceph
 kollaconfig: /etc/kolla/config
+ceph_ops_kolla_conf_path: /etc/kolla
 
 # backend configuration files
 backend_conf: "backend"
@@ -11,3 +12,5 @@ backend_path: "{{ role_path }}/files/backend"
 # temporary files
 secret_temp: "{{ local_temp }}/secret.xml"
 uuid_backup: "{{ local_temp }}/uuid.bak"
+
+ceph_ops_ceph_host: "{{ ceph_ops_ceph_hosts[0] }}"

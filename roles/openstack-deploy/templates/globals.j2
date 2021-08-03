@@ -4,7 +4,9 @@ openstack_release: "train"
 node_custom_config: "/etc/kolla/config"
 kolla_internal_vip_address: "{{ kolla_internal_vip_address }}"
 network_interface: "{{ network_interface }}"
+storage_interface: "{{ storage_interface }}"
 neutron_external_interface: "{{ network_external_interface }}"
+keepalived_virtual_router_id: "{{ keepalived_virtual_router_id }}"
 
 enable_cinder: "yes"
 

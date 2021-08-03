@@ -21,6 +21,7 @@ ceph_bin: /usr/bin/ceph
 
 # get hosts from inventory hosts
 ceph_hosts: "{{ ' '.join(ceph_inventory_hosts) }}"
+ceph_host: "{{ ceph_inventory_hosts[0] }}"
 
 # variables for modification of group_vars/all.yml
 ceph_all_sample: "{{ ceph_ansible_dest }}/group_vars/all.yml.sample"
@@ -36,7 +37,7 @@ ceph_site_conf: "{{ ceph_ansible_dest }}/site.yml"
 
 # hosts samples
 ceph_hosts_ini: hosts.ini
-ceph_hosts_sample: "{{ local_temp }}/hosts.yaml"
+ceph_hosts_sample: "{{ role_path }}/files/hosts.ini"
 ceph_hosts_conf: "{{ ceph_ansible_dest }}/hosts.yml"
 
 # logging file

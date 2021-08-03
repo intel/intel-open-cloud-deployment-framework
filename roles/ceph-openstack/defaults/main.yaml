@@ -1,2 +1,5 @@
 local_temp: "{{ glocaltemp }}"
 debug_mode: true
+
+# Get ceph hosts from inventory/hosts
+ceph_ops_ceph_hosts: "{{ groups['ceph_hosts'] }}"

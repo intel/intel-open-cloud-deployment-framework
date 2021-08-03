@@ -4,9 +4,7 @@
 10.67.125.8
 
 [controller_hosts]
-10.67.125.167
 10.67.125.12
-10.67.125.8
 
 [compute_hosts]
 10.67.125.8
@@ -14,8 +12,8 @@
 [deployment_host]
 localhost
 
-[pmem_hosts:children]
-compute_hosts
+[pmem_hosts]
+10.67.125.8
 
 [ssh_hosts:children]
 all_hosts
@@ -23,8 +21,9 @@ all_hosts
 [proxy_hosts:children]
 all_hosts
 
-[ceph_hosts:children]
-controller_hosts
+[ceph_hosts]
+10.67.125.12
+10.67.125.8
 
 [ceph_openstack:children]
 deployment_host

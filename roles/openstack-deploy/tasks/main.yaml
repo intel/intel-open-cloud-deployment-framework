@@ -40,15 +40,15 @@
   run_once: true
 
 # Reset nova rbd_secret_uuid
-- include: nova_uuid.yaml
-  with_items: "{{ ops_computes }}"
-  tags:
-    - nova_uuid
-    - reset_uuid
+#- include: nova_uuid.yaml
+#  with_items: "{{ ops_computes }}"
+#  tags:
+#    - nova_uuid
+#    - reset_uuid
 
 # Reset cinder rbd_secret_uuid
-- include: cinder_uuid.yaml
-  with_items: "{{ ops_storages }}"
-  tags:
-    - cinder_uuid
-    - reset_uuid
+#- include: cinder_uuid.yaml
+#  with_items: "{{ ops_storages }}"
+#  tags:
+#    - cinder_uuid
+#    - reset_uuid
