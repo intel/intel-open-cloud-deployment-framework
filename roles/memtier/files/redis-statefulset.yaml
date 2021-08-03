@@ -33,7 +33,7 @@ spec:
         - name: redis
           image: redis
           imagePullPolicy: IfNotPresent
-          args: ["--appendonly yes"]
+          args: ["--appendonly no"] # Do not use aof
           ports:
             - containerPort: 6379
               name: redis

@@ -19,9 +19,13 @@
         dest: "{{ local_temp }}/{{ item }}_configz"
       with_items: "{{ kubenodes }}"
 
-    # Print all nodes' proxy configz file
-    - debug: msg="{{ lookup('file', '{{ local_temp }}/{{ item }}_configz') }}"
+    - name: Dump "{{ local_temp }}/{{ item }}_configz"
+      shell: cat "{{ local_temp }}/{{ item }}_configz"
       with_items: "{{ kubenodes }}"
+      register: dump
+
+    - debug: msg="{{ item.stdout_lines }}"
+      loop: "{{ dump.results }}"
       when: debug_mode | bool
   delegate_to: "{{ k8s_master_ip }}"
   run_once: true
