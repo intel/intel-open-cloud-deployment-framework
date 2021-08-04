@@ -42,7 +42,7 @@ PMEM is an IA differentiate feature, all the support needed by the integration o
     +  `- /dev/sdb`
     +  `- /dev/sdc`
 	+ ops_external_ceph: true
-	+ ops_docker_registry: 10.67.125.21:4000
+	+ ops_docker_registry: 10.67.125.31:4000
 	+ ops_kolla_internal_vip_address: 10.67.125.123
 	+ ops_network_interface: eno1
 	+ glance_image_path: "/home/centos/workspace/centos7.qcow2"
