@@ -11,11 +11,20 @@
 - name: Create a virtual environment
   command: "virtualenv {{ targetenv }}"
 
+- name: Upgrade pip==9.0.1 to fix an issue when installing kolla-ansible
+  pip:
+   name:
+     - pip==9.0.1
+   state: present
+  become: true
+
 - name: Install pbr package
   pip:
     name: pbr
   become: true
 
+# When install kolla-ansible==9.2.0, make sure pip==9.0.1.
+# Other pip version might have an issue
 - name: Install kolla_ansible to system
   pip:
     name: kolla-ansible==9.2.0
