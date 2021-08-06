@@ -1,0 +1,50 @@
+---
+- name: Get rally repository
+  block:
+    - name: Clone rally repository
+      git:
+        repo: "{{ rally_repo }}"
+        dest: "{{ rally_dest }}"
+        version: "{{ rally_vers }}"
+      register: clone_result
+      async: 120
+      poll: 10
+
+    - debug: msg="{{ clone_result }}"
+      when: debug_mode | bool
+
+- name: Upgrade pip>=19.1.1 to fix an issue when installing rally
+  pip:
+   name:
+     - pip>=19.1.1
+   state: present
+   virtualenv: "{{ targetenv }}"
+
+- name: Install dependencies for rally
+  pip:
+   requirements: "{{ rally_dest }}/requirements.txt"
+   virtualenv: "{{ targetenv }}"
+
+- name: Install rally
+  shell: >
+    source "{{ targetenv }}"/bin/activate &&
+    python3 setup.py install
+  args:
+    executable: /bin/bash
+    chdir: "{{ rally_dest }}"
+
+- name: Install rally-openstack
+  pip:
+   name: rally-openstack
+   state: present
+   virtualenv: "{{ targetenv }}"
+
+- name: Create rally deployment
+  shell: /bin/bash {{ role_path }}/files/rally_deployment.sh
+  environment:
+    RALLY_VIRTUAL_PATH:  "{{ targetenv }}"
+    RALLY_OPS_ENV:  "{{ rally_ops_env }}"
+  register: result
+
+- debug: msg="{{ result.stdout_lines }}"
+  when: debug_mode | bool

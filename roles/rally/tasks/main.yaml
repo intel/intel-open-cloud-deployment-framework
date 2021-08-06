@@ -1,0 +1,8 @@
+---
+- include: env.yaml
+
+- include: deploy.yaml
+
+- include: run.yaml
+  tags:
+    - run

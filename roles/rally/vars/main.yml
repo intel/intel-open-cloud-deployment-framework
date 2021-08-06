@@ -1,0 +1,15 @@
+pythonsrc: epel-release, python36
+
+# python path
+pythonbin: /usr/bin/python3
+
+# path to virtual env
+targetenv: "{{ local_cache }}/rallyvenv"
+
+# paramters for cloning rally repo
+rally_repo: "{{ rally_repository }}"
+rally_dest: "{{ local_cache }}/rally"
+rally_vers: "{{ rally_version }}"
+
+rally_task_template: task.json
+rally_task_dest: "{{ local_temp }}/task.json"
