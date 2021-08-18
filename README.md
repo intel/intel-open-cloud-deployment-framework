@@ -104,7 +104,7 @@ PMEM is an IA differentiate feature, all the support needed by the integration o
 
 - [Kubernetes Deployment Doc](k8s-doc.md)
 - [Memtier tests with pmem memory mode on Kubernetes cluster](memtier-k8s-doc.md)
-- [How to run memtier tests on existing Kuberneters cluster](How_to_run_memtier_on_exsiting_k8s_cluster.md)
+- [How to run memtier tests on existing Kubernetes cluster](How_to_run_memtier_on_exsiting_k8s_cluster.md)
 - [How to only deploy OpenStack](How_to_only_deploy_openstack.md)
 - [Rally benchmark on VM](rally-doc.md)
 - [Deploy Ceph with 1 device : multiple osds](Deploy_Ceph_with_1_dev_multi_osds.md)
