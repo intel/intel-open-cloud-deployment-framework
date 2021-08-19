@@ -1,7 +1,11 @@
 # How to run memtier tests on existing Kubernetes cluster
 
 ## Prerequisites
-- An exsiting Kubernetes cluster on Ubuntu18.04 deployed via kubeadm 
+- An exsiting Kubernetes cluster.
+
+    Currently, we only verified two scenarios:
+    - Kubernetes cluster on Ubuntu18.04 deployed via kubeadm 
+    - Kubernetes cluster on CentOS7 deployed via our Kubernetes ansible script
 - OpenCloud deployment node on CentOS7
 
 
@@ -79,6 +83,12 @@
     4.7 Run memtier ansible script
 
         ansible-playbook -e ansible_ssh_user="centos" -i inventory/hosts memtier-k8s.yaml
+    
+    4.8 Get the performance result
+
+        After running memtier-k8s.yaml, the final performance result will be printed on the screen.
+        And if you want to recap the detailed full performance data, you can view the file: {{ local_temp }}/result-{{ memtier_pods }}-{{ memtier_iter_no }}
+        eg: /tmp/result-150-1
 
 ## Issues and Solutions
 
