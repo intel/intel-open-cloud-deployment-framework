@@ -43,6 +43,6 @@ spec:
               memory: "12Gi"
             requests:
               cpu: "500m"
-              memory: "1Gi"
+              memory: "12Gi"
       nodeSelector:
         benchmark: memtier

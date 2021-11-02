@@ -42,7 +42,7 @@ PMEM is an IA differentiate feature, all the support needed by the integration o
     +  `- /dev/sdb`
     +  `- /dev/sdc`
 	+ ops_external_ceph: true
-	+ ops_docker_registry: 10.67.125.21:4000
+	+ ops_docker_registry: 10.67.125.31:4000
 	+ ops_kolla_internal_vip_address: 10.67.125.123
 	+ ops_network_interface: eno1
 	+ glance_image_path: "/home/centos/workspace/centos7.qcow2"
@@ -73,3 +73,38 @@ PMEM is an IA differentiate feature, all the support needed by the integration o
 - Switch to the path <kolla_ansible_install_path>/tools, such as: /home/centos/intel/kolla-ansible/tools, execute command:
 
 	`$ ./kolla-ansible mariadb_recovery -i ../../multinode`
+
+### Note
+
+1. Before deploy OpenStack, please turn Intel Virtualization Technology (VT-x) on in your BIOS. You can use the command below to check whether VT is enabled or not.
+
+        cat /proc/cpuinfo | grep vmx
+
+2. When you have issues when deploying Ceph, please check the system time first. Sync time and try it again.
+
+    For example:
+
+        You might have a hang issue in below step:
+            TASK [ceph-ansible : Perform the deployment for ceph cluster]
+
+3. If your Ceph hosts < 3 hosts, please set ceph_osd_pool_default_size to < 3 to make pg's status active+clean.
+
+4. Before purge OpenStack cluster, you need to kill qemu processes first. If not, it will have an error when purging OpenStack cluster.
+
+    On OpenStack compute nodes:
+
+        ps aux | grep qemu
+        kill -9 <pid>
+
+5. If some VMs are up and some VMs are not, please use the command below to check resources like disk/cpu/memory first. Lack of resources might lead to VMs' failure.
+
+        nova  hypervisor-stats
+
+### Reference docs
+
+- [Kubernetes Deployment Doc](k8s-doc.md)
+- [Memtier tests with pmem memory mode on Kubernetes cluster](memtier-k8s-doc.md)
+- [How to run memtier tests on existing Kubernetes cluster](How_to_run_memtier_on_exsiting_k8s_cluster.md)
+- [How to only deploy OpenStack](How_to_only_deploy_openstack.md)
+- [Rally benchmark on VM](rally-doc.md)
+- [Deploy Ceph with 1 device : multiple osds](Deploy_Ceph_with_1_dev_multi_osds.md)

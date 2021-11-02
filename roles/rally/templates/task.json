@@ -1,0 +1,53 @@
+{% set rally_flavor_name = rally_flavor_name or "m1.small" %}
+{% set rally_runner_times = rally_runner_times or "10" %}
+{% set rally_concurrency = rally_concurrency or "10" %}
+{% set rally_image_name = rally_image_name or "Centos" %}
+{
+    "NovaServers.boot_server_attach_volume_and_list_attachments": [
+        {
+            "args": {
+                "flavor": {
+                    "name": "{{rally_flavor_name}}"
+                },
+                "image": {
+                    "name": "{{rally_image_name}}"
+                },
+                "volume_size": 5,
+                "volume_num": 1,
+                "boot_server_kwargs": {},
+                "create_volume_kwargs": {}
+            },
+            "runner": {
+                "type": "constant",
+                "times": {{rally_runner_times}},
+                "concurrency": {{rally_concurrency}}
+            },
+            "context": {
+                "users": {
+                    "tenants": 10,
+                    "users_per_tenant": 2
+                },
+                "quotas": {
+                    "neutron": {
+                        "network": -1,
+                        "subnet": -1
+                    },
+                    "nova": {
+                        "instances": 100000,
+                        "ram": -1,
+                        "cores": -1
+                    },
+                    "cinder": {
+                        "volumes": 100000
+                    }
+                }
+            },
+            "sla": {
+                "failure_rate": {
+                    "max": 0
+                }
+            }
+        }
+    ]
+}
+

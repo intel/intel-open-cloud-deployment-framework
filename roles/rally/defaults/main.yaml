@@ -1,0 +1,12 @@
+local_temp: "{{ glocaltemp }}"
+local_cache: "{{ glocalcache }}"
+debug_mode: true
+
+rally_repository: https://github.com/openstack/rally.git
+rally_version: 3.3.0
+rally_ops_env: /etc/kolla/admin-openrc.sh
+
+rally_flavor_name: "m1.small"
+rally_runner_times: 200
+rally_concurrency: 100
+rally_image_name: "Centos"

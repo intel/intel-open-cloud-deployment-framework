@@ -1,0 +1,6 @@
+---
+- name: Rally benchmark
+  hosts: deployment_host 
+  remote_user: "{{ ansible_ssh_user }}"
+  roles:
+    - rally

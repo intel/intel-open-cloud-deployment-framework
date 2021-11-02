@@ -39,8 +39,8 @@ pmem_mode: Memory
 #ceph_repository: community
 #ceph_stable_release: octopus
 ceph_network_ifg: eno1
-#ceph_block_devices:
-#  - /dev/sdb
+ceph_block_devices:
+  - /dev/sdb
 #  - /dev/sdc
 #  - /dev/sdd
 
@@ -195,3 +195,14 @@ disable_network_manager: true
 
 # Set memtier benchmark iteration number, only for tracking
 #memtier_iter_no: 1
+
+# Setup rally
+#rally_repository: https://github.com/openstack/rally.git
+#rally_version: 3.3.0
+#rally_ops_env: /etc/kolla/admin-openrc.sh
+
+# Setup rally task configuration
+#rally_flavor_name: "m1.small"
+#rally_runner_times: 200
+#rally_concurrency: 100
+#rally_image_name: "Centos"

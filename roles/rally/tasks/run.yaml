@@ -1,0 +1,14 @@
+---
+- name: Generate rally task.json 
+  template:
+    src: "{{ rally_task_template }}"
+    dest: "{{ rally_task_dest }}"
+
+- name: Run rally task 
+  shell: >
+     source "{{ targetenv }}"/bin/activate &&
+     rally task start "{{ rally_task_dest }}"
+  register: result
+
+- debug: msg="{{ result.stdout_lines }}"
+  when: debug_mode | bool

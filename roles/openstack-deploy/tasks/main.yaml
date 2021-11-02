@@ -1,3 +1,7 @@
+- include: env.yaml
+  delegate_to: localhost
+  run_once: true
+
 - block:
     # Install dependencies
     - include: dependency.yaml
