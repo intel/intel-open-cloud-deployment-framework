@@ -1,4 +1,4 @@
-# Deploy Ceph with 1 device : multiple osds
+# Deploy Ceph with one device with multiple osds
 
 ## Prerequisites
 - Install CentOS-7 OS on all nodes
