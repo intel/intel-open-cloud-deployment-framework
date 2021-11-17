@@ -1,4 +1,4 @@
-# How to only deploy OpenStack
+# How to only deploy OpenStack Standalone
 
 ## Prerequisites
 - Install CentOS-7 OS on all nodes
