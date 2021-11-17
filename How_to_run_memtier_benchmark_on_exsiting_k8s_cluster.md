@@ -1,4 +1,4 @@
-# How to run memtier tests on existing Kubernetes cluster
+# How to run memtier benchmark on existing Kubernetes cluster
 
 ## Prerequisites
 - An exsiting Kubernetes cluster.
